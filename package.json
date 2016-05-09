@@ -1,0 +1,14 @@
+{
+  "name": "dailyplatformer",
+  "version": "1.0.0",
+  "description": "Daily Platformer",
+  "main": "platformer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "vbazia",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
