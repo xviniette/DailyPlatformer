@@ -21,7 +21,7 @@ module.exports = function(app){
     return {
         user:{
             getUserById:function(id, callback){
-                db.query("SELECT * FROM users WHERE id = ?;", [id], callback);
+                db.query("SELECT * FROM users WHERE id_u = ?;", [id], callback);
             },
             getUserByLogin:function(login, callback){
                 db.query("SELECT * FROM users WHERE login = ?;", [login], callback);
@@ -36,7 +36,35 @@ module.exports = function(app){
                 db.query("INSERT INTO users SET ?", datas, callback);
             },
             updateUser:function(datas, id, callback){
-                db.query("UPDATE users SET ? WHERE ?", [datas, {id:id}], callback);
+                db.query("UPDATE users SET ? WHERE ?", [datas, {id_u:id}], callback);
+            }
+        },
+        map:{
+            getCurrentMap:function(callback){
+                db.query("SELECT * FROM maps ORDER BY id_m DESC LIMIT 0,1;", callback);
+            },
+            getAllMaps:function(callback){
+                db.query("SELECT * FROM maps;", callback);
+            },
+            getMap:function(id, callback){
+                db.query("SELECT * FROM maps WHERE id_m = ?;", [id], callback);
+            }
+        },
+        runs:{
+
+        },
+        skins:{
+            getSkin:function(id, callback){
+                db.query("SELECT * FROM skins WHERE id_s = ?;", [id], callback);
+            },
+            getUserSkins:function(user, callback){
+                db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id;", [id], callback);
+            },
+            getAllSkins:function(callback){
+                db.query("SELECT * FROM skins;", callback);
+            },
+            addUserSkin:function(user, skin, callback){
+                db.query("INSERT INTO user_skin SET ?", {id_u:user, id_s:skin}, callback);
             }
         }
     }
