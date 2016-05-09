@@ -57,6 +57,9 @@ module.exports = function(app){
             getSkin:function(id, callback){
                 db.query("SELECT * FROM skins WHERE id_s = ?;", [id], callback);
             },
+            getUserSkin:function(user, skin, callback){
+                db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = ? AND us.id_s = s.id;", [user, skin], callback);
+            },
             getUserSkins:function(user, callback){
                 db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id;", [id], callback);
             },
