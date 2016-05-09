@@ -1,8 +1,11 @@
-var express = require('express');
-var CronJob = require('cron').CronJob;
-var moment = require('moment');
-var app = express();
-var routes = require("./server/routes.js")(app);
+var express         = require('express');
+var CronJob         = require('cron').CronJob;
+var moment          = require('moment');
+var app             = express();
+var MysqlManager    = require('./server/mysql.js')(app);
+app.set("mysql", MysqlManager);
+var routes          = require('./server/routes.js')(app);
+
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
