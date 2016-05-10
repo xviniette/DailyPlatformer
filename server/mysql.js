@@ -51,7 +51,25 @@ module.exports = function(app){
             }
         },
         runs:{
-
+            getMapBestRuns:function(map, limit, ranked, callback){
+                if(ranked !== null){
+                    db.query("SELECT * FROM runs WHERE id_m = ? AND ranked = ? ORDER BY time ASC LIMIT 0,?;", [map, ranked, limit], callback);
+                }else{
+                    db.query("SELECT * FROM runs WHERE id_m = ? ORDER BY time ASC LIMIT 0,?;", [map, limit], callback);
+                }
+            },
+            getUserRuns:function(user, callback){
+                db.query("SELECT * FROM runs WHERE id_u = ?;", [user], callback);
+            },
+            getUserMapRun:function(user, map, ranked, callback){
+                db.query("SELECT * FROM runs WHERE id_u = ? AND id_m = ? AND ranked = ?;", [user, map, ranked], callback);
+            },
+            updateUserMapRun:function(user, ranked, map, datas, callback){
+                db.query("UPDATE runs SET ? WHERE ?", [datas, {id_u:user, id_m:map, ranked:ranked}], callback);
+            },
+            addRun:function(datas, callback){
+                db.query("INSERT INTO runs SET ?", datas, callback);
+            }
         },
         skins:{
             getSkin:function(id, callback){

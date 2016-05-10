@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='UTF-8' />
+	<title>BoomSoccer</title>
+	<style>
+	canvas{
+		border:1px solid black;
+	}
+	</style>
+</head>
+<body>	
+	<input type="number" id="w" value="20"><input type="number" id="h" value="25"><br/>
+	<canvas id="canvas" width="700" height="700"></canvas>
+	<textarea id="infos" rows="40" cols="100"></textarea>
+	<div id="res"></div>
+	<div id="textes"></div>
+	<script src="js/jquery.js"></script>
+	<script src="js/Map.js"></script>
+	<script>
+	
+
+	$("#infos").change(function(e){
+		map.init(JSON.parse($(this).val()));
+		displayMap();
+	});
+
+	$("#canvas").click(function(e){
+		var x = Math.floor((e.pageX - this.offsetLeft)/map.tilesize);
+		var y = Math.floor((e.pageY - this.offsetTop)/map.tilesize);
+		if(map.tiles[x][y] == 0){
+			map.tiles[x][y] = 1;
+		}else if(map.tiles[x][y] == 1){
+			map.tiles[x][y] = 2;
+		}else if(map.tiles[x][y] == 2){
+			map.tiles[x][y] = 3;
+		}else if(map.tiles[x][y] == 3){
+			var dx = prompt("x ?");
+			var dy = prompt("y ?");
+			if(dx != "" && dy != ""){
+				map.tiles[x][y] = "w;"+parseInt(dx)+";"+parseInt(dy);
+			}else{
+				map.tiles[x][y] = "w";
+			}
+		}else if(map.tiles[x][y][0] == "w"){
+			var text = prompt("oui ?");
+			if(text != ""){
+				map.tiles[x][y] = "p;"+text;
+			}
+		}else{
+			map.tiles[x][y] = 0;
+		}
+		displayMap();
+	});
+
+	$("#canvas").dblclick(function(e){
+		var x = Math.floor((e.pageX - this.offsetLeft)/map.tilesize);
+		var y = Math.floor((e.pageY - this.offsetTop)/map.tilesize);
+		map.tiles[x][y] = 0;
+		displayMap();
+	});
+
+	var initMap = function(){
+		map.tiles = [];
+		for(var i = 0; i < 20; i++){
+			map.tiles[i] = [];
+			for(var j = 0; j < 25; j++){
+				map.tiles[i][j] = 0;
+			}
+		} 
+	}
+
+	var displayMap = function(){
+		var textes = "";
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, canvas.width,canvas.height);
+		var traits = [];
+		ctx.font="8px Arial";
+		for(var i in map.tiles){
+			for(var j in map.tiles[i]){
+				var tile = map.tiles[i][j];
+				var colortext = "white";
+				if(tile == 0){
+					ctx.fillStyle = "white";
+					colortext = "black";
+					ctx.fillRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+				}else if(tile == 1){
+					ctx.fillStyle = "black";
+					ctx.fillRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+				}else if(tile == 2){
+					ctx.fillStyle = "blue";
+					ctx.fillRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+				}else if(tile == 3){
+					ctx.fillStyle = "red";
+					ctx.fillRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+				}else{
+					var t = tile.split(";");
+					if(t[0] == "w"){
+						ctx.fillStyle = "#CF23FF";
+						ctx.fillRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+						if(t[1] && t[2]){
+							traits.push({x1:i * map.tilesize + map.tilesize/2, y1:j * map.tilesize + map.tilesize/2,x2:parseInt(t[1]) * map.tilesize + map.tilesize/2, y2:parseInt(t[2]) * map.tilesize + map.tilesize/2});
+						}
+					}else if(t[0] == "p"){
+						ctx.fillStyle = "brown";
+						ctx.fillRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+						textes += t[1]+"<br/>";
+					}
+				}
+				ctx.strokeRect(i * map.tilesize, j * map.tilesize, map.tilesize, map.tilesize);
+				ctx.fillStyle = colortext;
+				ctx.fillText(i+"/"+j, i * map.tilesize + 2, j * map.tilesize + 10);
+
+			}
+		}
+
+		if(map.player){
+			if(map.player.x && map.player.y){
+				ctx.fillStyle = "blue";
+				ctx.beginPath();
+				ctx.arc(map.player.x,map.player.y,10,0, 2*Math.PI);
+				ctx.fill();
+			}
+		}
+
+		for(var i in map.balls){
+			if(map.balls[i].x && map.balls[i].y){
+				ctx.fillStyle = "red";
+				ctx.beginPath();
+				ctx.arc(map.balls[i].x,map.balls[i].y,10,0, 2*Math.PI);
+				ctx.fill();
+			}
+		}
+
+		for(var i in traits){
+			ctx.beginPath();
+			ctx.moveTo(traits[i].x1, traits[i].y1);
+			ctx.lineTo(traits[i].x2, traits[i].y2);
+			ctx.stroke();
+		}
+
+		$("#infos").val(JSON.stringify(map.getInitInfos()));
+		$("#res").text(JSON.stringify(map.getInitInfos()));
+		$("#textes").html(textes);
+
+	}
+
+	var resizeMap = function(w, h){
+		$("#canvas").attr("width", (w * 20)+"px");
+		$("#canvas").attr("height", (h * 20)+"px");
+		var newmap = [];
+		for(var i = 0; i < w; i++){
+			newmap[i] = [];
+			for(var j = 0; j < h; j++){
+				if(map.tiles[i] && map.tiles[i][j]){
+					newmap[i][j] = map.tiles[i][j];
+				}else{
+					newmap[i][j] = 0;
+				}
+			}
+		}
+		map.tiles = newmap;
+	}
+
+	$("#w").change(function(e){
+		resizeMap($("#w").val(), $("#h").val());
+		displayMap();
+	});
+
+	$("#h").change(function(e){
+		resizeMap($("#w").val(), $("#h").val());
+		displayMap();
+	});
+
+
+	var map = new Map({"name":"Nom","tiles":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],["w",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"w;9;1",0,0,0,0,0,0,0],["w",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"w;10;1",0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,1,0,0,0,0,0,0,0]],"tilesize":20,"balls":[{"x":200,"y":40},{"x":200,"y":400}],"player":{"x":200,"y":280}});
+	initMap();
+	displayMap();
+	</script>
+</body>
+</html>

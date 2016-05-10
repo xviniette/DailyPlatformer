@@ -1,0 +1,161 @@
+<canvas id="game" width="500" height="500">
+
+<script>
+var distance = function(x, y, x1, y1){
+    return Math.abs(x - x1) + Math.abs(y - y1);
+}
+
+var Moves = {
+    init:{
+        move:[[2]],
+        suite:{
+            right:5,
+            left:5
+        }
+    },
+    right:{
+        move:[
+            [0, 0, 0],
+            [0, 1, 2],
+            [0, 0, 0]
+        ],
+        suite:{
+            right:8,
+            jumpright:4,
+            left:1
+        }
+    },
+    left:{
+        move:[
+            [0, 0, 0],
+            [2, 1, 0],
+            [0, 0, 0]
+        ],
+        suite:{
+            left:8,
+            jumpleft:4,
+            right:1
+        }
+    },
+    jumpright:{
+        move:[
+            [0, 1, 2],
+            [0, 1, 0],
+            [0, 0, 0]
+        ],
+        suite:{
+            right:5,
+            jumpleft:5,
+            jumpright:2
+        }
+    },
+    jumpleft:{
+        move:[
+            [2, 1, 0],
+            [0, 1, 0],
+            [0, 0, 0]
+        ],
+        suite:{
+            left:5,
+            jumpleft:2,
+            jumpright:5
+        }
+    }
+}
+
+var worldSize = {
+    x:50,
+    y:50
+}
+
+var world = [];
+
+var random = function(min, max){
+    return Math.floor(Math.random() * (max + 1 - min) + min);
+}
+
+var display = function(){
+    var canvas = document.querySelector("#game");
+    var ctx = canvas.getContext("2d");
+
+    var tilesize = 10;
+
+    for(var i in world){
+        for(var j in world[i]){
+            if(world[i][j] == 1){
+                ctx.fillRect(i * tilesize, j * tilesize, tilesize, tilesize);
+            }
+        }
+    }
+
+}
+
+
+
+var init = function(){
+    for(var i in Moves){
+        Moves[i].poids = 0;
+        for(var j in Moves[i].suite){
+            Moves[i].poids += Moves[i].suite[j];
+        }
+    }
+
+    world = [];
+    for(var i = 0; i < worldSize.x; i++){
+        world[i] = [];
+        for(var j = 0; j < worldSize.y; j++){
+            world[i][j] = 0;
+        }
+    }
+
+    console.log(Moves);
+}
+
+var Position = {
+    x:20,
+    y:20
+}
+
+
+init();
+
+var currentState = "init";
+for(var boucle = 0; boucle < 10; boucle++){
+
+
+    var middleX = Math.floor(Moves[currentState].move.length/2);
+    var middleY = Math.floor(Moves[currentState].move[0].length/2);
+
+
+    for(var i in Moves[currentState].move){
+        for(var j in Moves[currentState].move[i]){
+            if(Moves[currentState].move[i][j] != 0){
+                world[Position.x + parseInt(i) - middleX][Position.y + parseInt(j) - middleY]  = 1;
+                if(Moves[currentState].move[i][j] == 2){
+                    Position.x += i - middleX;
+                    Position.y += j - middleY;
+                }
+            }
+        }
+    }
+
+    console.log(currentState, Position.x+"/"+Position.y);
+
+
+    var next = random(0, Moves[currentState].poids);
+
+    var sum = 0;
+    for(var i in Moves[currentState].suite){
+        sum += Moves[currentState].suite[i];
+        if(sum >= next){
+            currentState = i;
+            break;
+        }
+    }
+
+}
+
+display();
+
+
+</script>
