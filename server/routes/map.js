@@ -1,7 +1,7 @@
-module.exports = function(app, baseURL){
+module.exports = function(app, router){
     var mysql = app.get("MysqlManager");
 
-    app.get(baseURL+"/current", function(req, res){
+    router.get("/current", function(req, res){
         mysql.map.getCurrentMap(function(err, rows){
             if(err || rows.length == 0){
                 res.json(null);
@@ -11,7 +11,7 @@ module.exports = function(app, baseURL){
         });
     });
 
-    app.get(baseURL+"/all", function(req, res){
+    router.get("/all", function(req, res){
         mysql.map.getAllMaps(function(err, rows){
             if(!err){
                 res.json(rows);
@@ -19,7 +19,7 @@ module.exports = function(app, baseURL){
         });
     });
 
-    app.get(baseURL+"/:id", function(req, res){
+    router.get("/:id", function(req, res){
         mysql.map.getMap(req.params.id, function(err, rows){
             if(err || rows.length == 0){
                 res.json(null);

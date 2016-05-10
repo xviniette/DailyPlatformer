@@ -1,9 +1,9 @@
 var jwt = require('jsonwebtoken');
 
-module.exports = function(app, baseURL){
+module.exports = function(app, router){
     var mysql = app.get("MysqlManager");
 
-    app.get(baseURL+"/register/:login/:password", function(req, res){
+    router.get("/register/:login/:password", function(req, res){
         console.log(req.params);
         if(req.params.login && req.params.password){
             mysql.user.addUser({
@@ -25,7 +25,7 @@ module.exports = function(app, baseURL){
         }
     });
 
-    app.get(baseURL+"/login/:login/:password", function(req, res){
+    router.get("/login/:login/:password", function(req, res){
         if(req.params.login && req.params.password){
             mysql.user.getUserAuthentification(req.params.login, req.params.password, function(err, r){
                 if(r.length > 0){
@@ -35,7 +35,7 @@ module.exports = function(app, baseURL){
         }
     });
 
-    app.get(baseURL+"/profile/:login", function(req, res){
+    router.get("/profile/:login", function(req, res){
         mysql.user.getUserByLogin(req.params.login, function(err, rows){
             if(rows.length > 0){
                 res.json(rows[0]);

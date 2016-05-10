@@ -17,12 +17,17 @@ module.exports = function(app){
         }
     });
 
+
+    var express = app.get("express");
+
     var routeDir = __dirname + "/routes/";
 
     fs.readdir(routeDir, function(err, files){
         if(!err){
             for(var i in files){
-                require(routeDir + files[i])(app, "/"+files[i].split(".")[0]);
+                var router = express.Router();
+                app.use("/"+files[i].split(".")[0], router);
+                require(routeDir + files[i])(app, router);
             }
         }
     });
