@@ -2,12 +2,7 @@ var mysql = require('mysql');
 
 module.exports = function(app){
     var db;
-    db = mysql.createConnection({
-        host     : 'localhost',
-        user     : 'root',
-        password : '',
-        database : 'platformer'
-    });
+    db = mysql.createConnection(app.get("config").mysql);
 
     db.connect(function(err){
         if(err) {
@@ -19,6 +14,9 @@ module.exports = function(app){
     });
 
     return {
+        getDB:function(){
+            return db;
+        },
         user:{
             getUserById:function(id, callback){
                 db.query("SELECT * FROM users WHERE id_u = ?;", [id], callback);

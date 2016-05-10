@@ -1,12 +1,13 @@
-var express         = require('express');
-var app             = express();
+var express = require('express');
+var app = express();
 
-var MysqlManager    = require('./server/mysql.js')(app);
-app.set("mysql", MysqlManager);
+var config  = require('./server/config.js');
+app.set("config", config);
 
+var MysqlManager = require('./server/mysql.js')(app);
+var CronManager = require('./server/CronManager.js')(app);
 
-var CronManager     = require('./server/CronManager.js')(app);
-
+app.set("MysqlManager", MysqlManager);
 
 app.use(express.static("public"));
 

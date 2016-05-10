@@ -1,16 +1,23 @@
+var fs = require("fs");
+
 module.exports = function(app){
-
     app.use(function(req, res, next){
-        console.log("logged");
-        next();
+        var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+        if(token){
+
+        }else{
+            next();
+        }
     });
 
-    app.get("/currentLevel", function(req, res){
-        res.send("oui");
-    });
+    var routeDir = __dirname + "/routes/";
 
-    app.get('/', function (req, res) {
-        res.sendFile(path.join(__dirname, '../public/', 'index.html'));
+    fs.readdir(routeDir, function(err, files){
+        if(!err){
+            for(var i in files){
+                require(routeDir + files[i])(app, "/"+files[i].split(".")[0]);
+            }
+        }
     });
-
 }
