@@ -6,18 +6,34 @@ module.exports = function(app, baseURL){
     app.get(baseURL+"/register/:login/:password", function(req, res){
         console.log(req.params);
         if(req.params.login && req.params.password){
-           
+            mysql.user.addUser({
+                login:req.params.login,
+                password:req.params.password
+            }, function(err, rows){
+                if(!err){
+                    var id = rows.insertId;
+                    var user = {
+                        id:id,
+                        login:req.params.login,
+                        password:req.params.password
+                    }
+                    var token = jwt.sign(user, app.get('config').jwtKey);
+                    mysql.user.updateUser({token:token}, id);
+                    res.json({token:token});
+                }
+            });
         }
     });
 
     app.get(baseURL+"/login/:login/:password", function(req, res){
-        console.log(req.params);
+        if(req.connected){
+            console.log("DEJA CONNECTE FDP");
+        }
         if(req.params.login && req.params.password){
-            mysql.user.addUser({
-                login:req.params.login,
-                password:req.params.password
-            }, function(err, r){
-                res.json({lol:"lol"});
+            mysql.user.getUserAuthentification(req.params.login, req.params.password, function(err, r){
+                if(r.length > 0){
+                    res.json({token:r[0].token});
+                }
             });
         }
     });

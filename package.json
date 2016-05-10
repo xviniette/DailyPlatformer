@@ -9,6 +9,7 @@
   "author": "vbazia",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.1",
     "cron": "^1.1.0",
     "express": "^4.13.4",
     "fs": "0.0.2",

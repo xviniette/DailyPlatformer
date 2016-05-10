@@ -1,5 +1,5 @@
 module.exports = {
-    "jwtKey":"elbazialegod",
+    jwtKey:"elbazialegod",
     mysql:{
         host     : 'localhost',
         user     : 'root',
