@@ -26,9 +26,6 @@ module.exports = function(app, baseURL){
     });
 
     app.get(baseURL+"/login/:login/:password", function(req, res){
-        if(req.connected){
-            console.log("DEJA CONNECTE FDP");
-        }
         if(req.params.login && req.params.password){
             mysql.user.getUserAuthentification(req.params.login, req.params.password, function(err, r){
                 if(r.length > 0){
@@ -36,5 +33,15 @@ module.exports = function(app, baseURL){
                 }
             });
         }
+    });
+
+    app.get(baseURL+"/profile/:login", function(req, res){
+        mysql.user.getUserByLogin(req.params.login, function(err, rows){
+            if(rows.length > 0){
+                res.json(rows[0]);
+            }else{
+                res.json(null);
+            }
+        });
     });
 }
