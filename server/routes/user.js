@@ -5,17 +5,13 @@ module.exports = function(app, router){
 
     router.post("/register", function(req, res){
         if(req.body.login && req.body.password){
-            mysql.user.addUser({
+            var user = {
                 login:req.body.login,
                 password:req.body.password
-            }, function(err, rows){
+            };
+            mysql.user.addUser(user, function(err, rows){
                 if(!err){
-                    var id = rows.insertId;
-                    var user = {
-                        id:id,
-                        login:req.body.login,
-                        password:req.body.password
-                    }
+                    user.id = rows.insertId;
                     var token = jwt.sign(user, app.get('config').jwtKey);
                     mysql.user.updateUser({token:token}, id);
                     res.json({token:token});
