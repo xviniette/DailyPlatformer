@@ -29,5 +29,10 @@ module.exports = function(app){
                 require(routeDir + files[i])(app, router);
             }
         }
+
+        //404
+        app.all("*", function(req, res){
+            res.status(404).json({msg:'404: Page not Found'});
+        });
     });
 }
