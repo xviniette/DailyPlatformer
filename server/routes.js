@@ -9,8 +9,10 @@ module.exports = function(app){
             jwt.verify(token, app.get('config').jwtKey, function(err, decoded) { 
                 if(!err){
                     req.connected = decoded;
-                }
-                next();
+                    next();
+                }else{
+                    res.status(401).json({msg:"Authentication token error."});
+                }   
             });
         }else{
             next();

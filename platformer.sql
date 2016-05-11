@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.1.12
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Lun 09 Mai 2016 à 15:56
--- Version du serveur :  10.1.9-MariaDB
--- Version de PHP :  5.6.15
+-- Généré le :  Mer 11 Mai 2016 à 23:15
+-- Version du serveur :  5.6.16
+-- Version de PHP :  5.5.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Base de données :  `platformer`
@@ -26,10 +26,19 @@ SET time_zone = "+00:00";
 -- Structure de la table `maps`
 --
 
-CREATE TABLE `maps` (
-  `id_m` int(11) NOT NULL,
-  `tiles` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `maps` (
+  `id_m` int(11) NOT NULL AUTO_INCREMENT,
+  `tiles` text,
+  PRIMARY KEY (`id_m`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `maps`
+--
+
+INSERT INTO `maps` (`id_m`, `tiles`) VALUES
+(1, '[[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]]'),
+(2, 'qsdqsd');
 
 -- --------------------------------------------------------
 
@@ -37,15 +46,18 @@ CREATE TABLE `maps` (
 -- Structure de la table `runs`
 --
 
-CREATE TABLE `runs` (
-  `id_r` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `runs` (
+  `id_r` int(11) NOT NULL AUTO_INCREMENT,
   `id_m` int(11) DEFAULT NULL,
   `id_u` int(11) DEFAULT NULL,
+  `id_s` int(11) DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
   `positions` text,
   `inputs` text,
-  `ranked` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `ranked` tinyint(1) DEFAULT NULL,
+  `message` text,
+  PRIMARY KEY (`id_r`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -53,11 +65,12 @@ CREATE TABLE `runs` (
 -- Structure de la table `skins`
 --
 
-CREATE TABLE `skins` (
-  `id_s` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `skins` (
+  `id_s` int(11) NOT NULL AUTO_INCREMENT,
   `title` int(11) DEFAULT NULL,
-  `rarity` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `rarity` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_s`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -65,11 +78,22 @@ CREATE TABLE `skins` (
 -- Structure de la table `users`
 --
 
-CREATE TABLE `users` (
-  `id_u` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `users` (
+  `id_u` int(11) NOT NULL AUTO_INCREMENT,
   `login` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `password` varchar(255) DEFAULT NULL,
+  `token` text,
+  PRIMARY KEY (`id_u`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+--
+-- Contenu de la table `users`
+--
+
+INSERT INTO `users` (`id_u`, `login`, `password`, `token`) VALUES
+(4, 'elbazia', '123', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibG9naW4iOiJlbGJhemlhIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE0NjI5MDg4Nzd9.Rc6-0UlRWb8feGKc-EoFkf7qk5BWzg5DvRt7tI4NaP8'),
+(5, 'elfilsdepute', 'lejuifnazi', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibG9naW4iOiJlbGZpbHNkZXB1dGUiLCJwYXNzd29yZCI6ImxlanVpZm5hemkiLCJpYXQiOjE0NjI5MTE1ODV9.qTlua-SExY3UGdqgj6eFS1gPEWr0w80UAINp3JlO6Ig'),
+(6, 'qsdq', 'fqfq', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InFzZHEiLCJwYXNzd29yZCI6ImZxZnEiLCJpZCI6NiwiaWF0IjoxNDYyOTk5MzkwfQ.OsQZROUFMbmBvdIhFsrGthU5C_D3gmNrkHwcf7dsrPc');
 
 -- --------------------------------------------------------
 
@@ -77,75 +101,13 @@ CREATE TABLE `users` (
 -- Structure de la table `user_skin`
 --
 
-CREATE TABLE `user_skin` (
-  `id_us` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `user_skin` (
+  `id_us` int(11) NOT NULL AUTO_INCREMENT,
   `id_u` int(11) DEFAULT NULL,
-  `id_s` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id_s` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_us`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Index pour les tables exportées
---
-
---
--- Index pour la table `maps`
---
-ALTER TABLE `maps`
-  ADD PRIMARY KEY (`id_m`);
-
---
--- Index pour la table `runs`
---
-ALTER TABLE `runs`
-  ADD PRIMARY KEY (`id_r`);
-
---
--- Index pour la table `skins`
---
-ALTER TABLE `skins`
-  ADD PRIMARY KEY (`id_s`);
-
---
--- Index pour la table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id_u`);
-
---
--- Index pour la table `user_skin`
---
-ALTER TABLE `user_skin`
-  ADD PRIMARY KEY (`id_us`);
-
---
--- AUTO_INCREMENT pour les tables exportées
---
-
---
--- AUTO_INCREMENT pour la table `maps`
---
-ALTER TABLE `maps`
-  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `runs`
---
-ALTER TABLE `runs`
-  MODIFY `id_r` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `skins`
---
-ALTER TABLE `skins`
-  MODIFY `id_s` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `users`
---
-ALTER TABLE `users`
-  MODIFY `id_u` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `user_skin`
---
-ALTER TABLE `user_skin`
-  MODIFY `id_us` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

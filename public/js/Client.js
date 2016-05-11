@@ -3,7 +3,7 @@ var Client = function(){
 
 	this.delta = 1000/FPS/1000;
 
-	this.map = new Map(JSON.parse(lamap));
+	this.map = new Map();
 	this.player = new Player({room:this});
 	this.player.setCoordinate(100, 100);
 
@@ -17,8 +17,8 @@ Client.prototype.init = function(data){
 	
 
 Client.prototype.update = function(){
-	this.player.update(this.checkKeys());
-	this.display.render();
+	/*this.player.update(this.checkKeys());
+	this.display.render();*/
 }
 
 Client.prototype.checkKeys = function(){

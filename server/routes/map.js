@@ -4,7 +4,7 @@ module.exports = function(app, router){
     router.get("/current", function(req, res){
         mysql.map.getCurrentMap(function(err, rows){
             if(err || rows.length == 0){
-                res.json(null);
+                res.json({error:"No current map."});
             }else{
                 res.json(rows[0]);
             }
@@ -15,6 +15,8 @@ module.exports = function(app, router){
         mysql.map.getAllMaps(function(err, rows){
             if(!err){
                 res.json(rows);
+            }else{
+                res.json({error:"Problem getting maps."});
             }
         });
     });
@@ -22,7 +24,7 @@ module.exports = function(app, router){
     router.get("/:id", function(req, res){
         mysql.map.getMap(req.params.id, function(err, rows){
             if(err || rows.length == 0){
-                res.json(null);
+                res.json({error:"Map doesn't exist."});
             }else{
                 res.json(rows[0]);
             }
