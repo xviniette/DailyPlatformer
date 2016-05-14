@@ -75,6 +75,10 @@ this.dy = 0;
 this.ry = 1 - this.rapport;
 }
 
+	if(this.hasFinishCollision(this.cx, this.cy)){
+		this.finished();
+	}
+
 	//On met les bonnes valeurs pour ry/cy
 	while(this.ry < 0){this.ry++;this.cy--;}
 	while(this.ry > 1){this.ry--;this.cy++;}
@@ -93,6 +97,14 @@ Objet.prototype.hasWallCollision = function(cx, cy){
 		return true;
 	}
 	return (tiles[cx][cy] === 1);
+}
+
+Objet.prototype.hasFinishCollision = function(cx, cy){
+	tiles = this.room.map.tiles;
+	if(cx < 0 || cx >= tiles.length || cy < 0 || cy >= tiles[cx].length){
+		return true;
+	}
+	return (tiles[cx][cy] === 2);
 }
 
 Objet.prototype.hasObjectCollision = function(obj){

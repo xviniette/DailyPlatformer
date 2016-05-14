@@ -13,6 +13,11 @@ var Client = function(){
 
 Client.prototype.init = function(data){
 }
+
+Client.prototype.loadMap = function(data){
+	this.map = new Map(data);
+	this.player.setCoordinate(this.map.player.x, this.map.player.y);
+}
 	
 
 Client.prototype.update = function(){

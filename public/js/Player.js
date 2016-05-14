@@ -32,6 +32,8 @@ var Player = function(json){
 	this.lastAction = 0;
 	this.nbInputsExecutable = 0;
 
+	this.allInputs = [];
+
 	this.sprite = null;
 
 	this.init(json);
@@ -46,6 +48,8 @@ Player.prototype.init = function(json){
 }
 
 Player.prototype.reset = function(){
+	this.setCoordinate(this.room.map.player.x, this.room.map.player.y);
+	this.allInputs = [];
 	this.dx = 0;
 	this.dy = 0;
 }
@@ -57,6 +61,8 @@ Player.prototype.update = function(inp){
 
 	this.friction = {x:0.3,y:0.9};
 	this.bounce = {x:0,y:0};
+
+	this.allInputs.push(inp);
 	
 	var baseInput = {}
 	if(inp.u){
@@ -82,23 +88,11 @@ Player.prototype.update = function(inp){
 	this.physic();
 }
 
-//COMMUN
-
-Player.prototype.hasWallCollision = function(cx, cy){
-	tiles = this.room.map.tiles;
-	if(cx < 0 || cx >= tiles.length || cy < 0 || cy >= tiles[cx].length){
-		return true;
-	}
-	return (tiles[cx][cy] == 1);
-}
-
-Player.prototype.hasObjectCollision = function(obj){
-	var distance = Math.sqrt(Math.pow(obj.x - this.x, 2) + Math.pow(obj.y - this.y, 2));
-	if(distance <= this.radius + obj.radius){
-		var d = Math.round(distance * 100)/100;
-		return d > 0 ? d : 1
-	}
-	return false;
+Player.prototype.finished = function(){
+	$.post("/run/upload/"+this.room.map.id_m, {inputs:JSON.stringify(this.allInputs)}, function(data){
+		console.log(data);
+	});
+	this.reset();
 }
 
 Player.prototype.getInitInfo = function(){

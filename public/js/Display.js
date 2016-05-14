@@ -23,11 +23,18 @@ Display.prototype.render = function(){
 	var map = this.client.map;
 	var tilesize = map.tilesize;
 
-	this.ctx.fillStyle = "black";
+	
 
 	for(var i in map.tiles){
 		for(var j in map.tiles[i]){
-			if(map.tiles[i][j] == 1){
+			if(map.tiles[i][j] != 0){
+				switch(map.tiles[i][j]){
+					case 2:
+					this.ctx.fillStyle = "red";
+					break;
+					default:
+					this.ctx.fillStyle = "black";
+				}
 				this.ctx.fillRect(i * tilesize, j * tilesize, tilesize, tilesize);
 			}
 		}
