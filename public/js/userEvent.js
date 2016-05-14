@@ -1,3 +1,5 @@
+var vues = {};
+
 $(function(){
 	document.body.addEventListener("keydown", function(e) {
 		client.keys[e.keyCode] = true;
@@ -16,27 +18,51 @@ $(function(){
 		}
 	});
 
-	$("#login_form").submit(function(e){
-		e.preventDefault();
-		$.post("/user/login", {login:$("#login_login").val(), password:$("#login_password").val()}, function(data){
-			console.log("LOGIN", data);
-			if(!data.error){
-				localStorage.setItem("token", data.token);
+	//LOGIN
+	vues.login = new Vue({
+		el: '#login_form',
+		data:{
+			login:null,
+			password:null
+		},
+		methods:{
+			submit:function(){
+				$.post("/user/login", {login:this.login, password:this.password}, function(data){
+					console.log("LOGIN", data);
+					if(!data.error){
+						localStorage.setItem("token", data.token);
+					}
+				});
 			}
-		});
+		}
 	});
 
-	$("#register_form").submit(function(e){
-		e.preventDefault();
-		$.post("/user/register", {login:$("#register_login").val(), password:$("#register_password").val()}, function(data){
-			console.log("REGISTER", data);
-			if(!data.error){
-				localStorage.setItem("token", data.token);
+	//REGISTER
+	vues.register = new Vue({
+		el: '#register_form',
+		data:{
+			login:null,
+			password:null
+		},
+		methods:{
+			submit:function(){
+				$.post("/user/register", {login:this.login, password:this.password}, function(data){
+					console.log("REGISTER", data);
+					if(!data.error){
+						localStorage.setItem("token", data.token);
+					}
+				});
 			}
-		});
+		}
 	});
 
-	$("#disconnect").click(function(e){
-		localStorage.removeItem("token");
+	//DISCONNECT
+	vues.disconnect = new Vue({
+		el: '#disconnect',
+		methods:{
+			disconnect:function(){
+				localStorage.removeItem("token");
+			}
+		}
 	});
 });

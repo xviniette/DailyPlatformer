@@ -3,9 +3,8 @@ var Client = function(){
 
 	this.delta = 1000/FPS/1000;
 
-	this.map = new Map();
+	this.map = null;
 	this.player = new Player({room:this});
-	this.player.setCoordinate(100, 100);
 
 	this.keys = [];
 
@@ -17,8 +16,12 @@ Client.prototype.init = function(data){
 	
 
 Client.prototype.update = function(){
-	/*this.player.update(this.checkKeys());
-	this.display.render();*/
+	if(this.player != null && this.map != null){
+		this.player.update(this.checkKeys());
+	}
+	if(this.map != null){
+		this.display.render();
+	}
 }
 
 Client.prototype.checkKeys = function(){
