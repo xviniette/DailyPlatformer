@@ -22,19 +22,33 @@ module.exports.runIsValid = function(map, inputs){
     var player = new Player({room:room});
     player.setCoordinate(room.map.player.x, room.map.player.y);
 
-    var saveInterval = 
+    var positions = [];
+
+    var SAVE_FPS = 10;
+    var saveInterval = FPS/SAVE_FPS;
+    var incrementeInterval = 0;
+    var total = 0;
     for(var i in inputs){
         player.update(inputs[i]);
+
+        if(incrementeInterval == 0){
+            positions.push({x:player.x, y:player.y, t:Math.floor(total/saveInterval * 1000/SAVE_FPS)}); 
+        }
+        incrementeInterval++;
+        total++;
+        if(incrementeInterval >= saveInterval){
+            incrementeInterval = 0;
+        }
     }
+    positions.push({x:player.x, y:player.y, t:Math.floor(total/saveInterval * 1000/SAVE_FPS)}); 
 
     if(finished){
-        console.log("GG");
         return {
             valid:true,
-            frame:inputs.length,
-            time:inputs.length*Math.floor(1000/FPS)
+            time:inputs.length*Math.floor(1000/FPS),
+            positions:positions
         }
     }else{
-        console.log("arnaque");
+        return false;
     }
 }

@@ -48,7 +48,7 @@ module.exports = function(app){
                 db.query("SELECT * FROM maps WHERE id_m = ?;", [id], callback);
             }
         },
-        runs:{
+        run:{
             getMapBestRuns:function(map, limit, ranked, callback){
                 if(ranked !== null){
                     db.query("SELECT * FROM runs WHERE id_m = ? AND ranked = ? ORDER BY time ASC LIMIT 0,?;", [map, ranked, limit], callback);
@@ -62,8 +62,8 @@ module.exports = function(app){
             getUserMapRun:function(user, map, ranked, callback){
                 db.query("SELECT * FROM runs WHERE id_u = ? AND id_m = ? AND ranked = ?;", [user, map, ranked], callback);
             },
-            updateUserMapRun:function(user, ranked, map, datas, callback){
-                db.query("UPDATE runs SET ? WHERE ?", [datas, {id_u:user, id_m:map, ranked:ranked}], callback);
+            updateUserMapRun:function(user, map, ranked, datas, callback){
+                db.query("UPDATE runs SET ? WHERE id_u = ? AND id_m = ? AND ranked = ?;", [datas, user, map, ranked], callback);
             },
             addRun:function(datas, callback){
                 db.query("INSERT INTO runs SET ?", datas, callback);

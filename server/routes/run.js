@@ -15,10 +15,44 @@ module.exports = function(app, router){
 
                 mysql.map.getMap(req.params.map, function(err, rows){
                     if(!err && rows.length > 0){
-                        runValidator.runIsValid(rows[0], inputs);
+                        var valid = runValidator.runIsValid(rows[0], inputs);
+                        if(valid !== false){
+                            var dataRun = {
+                                id_m:rows[0].id_m,
+                                id_u:req.connected.id,
+                                time:valid.time,
+                                positions:JSON.stringify(valid.positions),
+                                ranked:true
+                            }
+
+                            mysql.map.getCurrentMap(function(err, row){
+                                var ranked = 0;
+                                if(row[0].id_m == dataRun.id_m){
+                                    ranked = 1;
+                                }
+
+                                dataRun.ranked = ranked;
+
+                                mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, function(err, rows){
+                                    if(rows.length > 0){
+                                        if(rows[0].time > dataRun.time){
+                                            console.log("xD");
+                                            mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun, function(err, rows){
+                                                console.log(err);
+
+                                            });
+                                        }
+                                    }else{
+                                        mysql.run.addRun(dataRun, function(err, rows){});
+                                    }
+                                });
+                            });
+                            res.json({time:dataRun.time});
+                        }else{
+                            res.json({error:"Probleme run"});
+                        }
                     }
                 });
-
 
 
             }catch(e){
