@@ -40,6 +40,12 @@ Display.prototype.render = function(){
 		}
 	}
 
+	var ghosts = this.client.ghosts;
+	for(var i in ghosts){
+		this.ctx.fillStyle = "yellow";
+		this.ctx.fillRect(ghosts[i].x - ghosts[i].radius, ghosts[i].y - ghosts[i].radius, ghosts[i].radius * 2, ghosts[i].radius * 2);
+	}
+
 	var player = this.client.player;
 
 	this.ctx.fillStyle = "blue";

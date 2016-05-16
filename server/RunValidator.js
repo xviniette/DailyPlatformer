@@ -14,6 +14,7 @@ var finished = false;
 module.exports = {};
 
 module.exports.runIsValid = function(map, inputs){
+    finished = false;
     var room = {
         map:new Map(map),
         delta:1000/FPS/1000

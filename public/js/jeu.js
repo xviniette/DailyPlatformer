@@ -4,17 +4,10 @@ var socket;
 
 $(function(){
 	client = new Client();
-	//Interval client
-	var lastTs = Date.now();
+	client.loadMap();
 
-	var lastTs = Date.now();
 	var update = function(){
-		var ts = Date.now();
-		var delta = 1000/FPS;
-		while(ts - lastTs >= delta){
-			client.update();
-			lastTs += delta;
-		}
+		client.update();
 		requestAnimationFrame(update);
 	}
 	requestAnimationFrame(update);

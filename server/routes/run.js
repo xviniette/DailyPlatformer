@@ -65,8 +65,27 @@ module.exports = function(app, router){
         }
     }); 
 
-    router.get("/bests/:map/:ranked?/:limit?", function(req, res){
-        console.log(req.params.map, req.params.ranked, req.params.limit);
-        res.json(req.params);
+    router.get("/best/:map/:ranked?/:limit?", function(req, res){
+        var limit = 10;
+        if(req.params.limit){
+            limit = parseInt(req.params.limit);
+        }
+
+        var ranked = null;
+        if(req.params.ranked){
+            ranked = (req.params.ranked == 1) ? 1 : 0;
+        }
+
+        mysql.run.getMapBestRuns(req.params.map, limit, ranked, function(err, rows){
+            if(err){
+                res.json({error:"Error ghosts"});
+                return;
+            }
+            res.json(rows);
+        });
+    });
+
+    router.get("player/:user/:ranked/:id", function(req, res){
+
     });
 }

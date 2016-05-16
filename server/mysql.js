@@ -51,13 +51,13 @@ module.exports = function(app){
         run:{
             getMapBestRuns:function(map, limit, ranked, callback){
                 if(ranked !== null){
-                    db.query("SELECT * FROM runs WHERE id_m = ? AND ranked = ? ORDER BY time ASC LIMIT 0,?;", [map, ranked, limit], callback);
+                    db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND ranked = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT 0,?;", [map, ranked, limit], callback);
                 }else{
-                    db.query("SELECT * FROM runs WHERE id_m = ? ORDER BY time ASC LIMIT 0,?;", [map, limit], callback);
+                    db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT 0,?;", [map, limit], callback);
                 }
             },
-            getUserRuns:function(user, callback){
-                db.query("SELECT * FROM runs WHERE id_u = ?;", [user], callback);
+            getUserRuns:function(user, ranked, callback){
+                db.query("SELECT * FROM runs WHERE id_u = ? AND ranked = ?;", [user, ranked], callback);
             },
             getUserMapRun:function(user, map, ranked, callback){
                 db.query("SELECT * FROM runs WHERE id_u = ? AND id_m = ? AND ranked = ?;", [user, map, ranked], callback);

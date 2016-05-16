@@ -65,8 +65,4 @@ $(function(){
 			}
 		}
 	});
-
-	$.get("/map/current", function(data){
-		client.loadMap(data);
-	});
 });
