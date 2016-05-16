@@ -89,10 +89,7 @@ Player.prototype.update = function(inp){
 }
 
 Player.prototype.finished = function(){
-	$.post("/run/upload/"+this.room.map.id_m, {inputs:JSON.stringify(this.allInputs)}, function(data){
-		console.log(data);
-	});
-	this.reset();
+	this.room.end();
 }
 
 Player.prototype.getInitInfo = function(){

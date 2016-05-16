@@ -90,7 +90,14 @@ Client.prototype.starting = function(keys){
 }
 
 Client.prototype.end = function(){
+	if(this.started){
+		$.post("/run/upload/"+this.map.id_m, {inputs:JSON.stringify(this.player.allInputs)}, function(data){
+			console.log(data);
+		});
 
+	}
+	this.started = false;
+	this.initialize();
 }
 
 Client.prototype.update = function(){
