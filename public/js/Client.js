@@ -64,7 +64,6 @@ Client.prototype.initialize = function(){
 	this.started = false;
 	this.startingTime = Date.now();
 
-
 	this.ghosts = [];
 	for(var i in this.runs){
 		var p = new Player({room:this});

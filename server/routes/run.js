@@ -36,18 +36,19 @@ module.exports = function(app, router){
                                 mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, function(err, rows){
                                     if(rows.length > 0){
                                         if(rows[0].time > dataRun.time){
-                                            console.log("xD");
                                             mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun, function(err, rows){
                                                 console.log(err);
-
                                             });
+                                            res.json({time:dataRun.time, best:true});
+                                        }else{
+                                            res.json({time:dataRun.time, best:false});
                                         }
                                     }else{
                                         mysql.run.addRun(dataRun, function(err, rows){});
+                                        res.json({time:dataRun.time, best:true});
                                     }
                                 });
                             });
-                            res.json({time:dataRun.time});
                         }else{
                             res.json({error:"Probleme run"});
                         }
@@ -66,7 +67,7 @@ module.exports = function(app, router){
     }); 
 
     router.get("/best/:map/:ranked?/:limit?", function(req, res){
-        var limit = 10;
+        var limit = 100;
         if(req.params.limit){
             limit = parseInt(req.params.limit);
         }
@@ -78,14 +79,33 @@ module.exports = function(app, router){
 
         mysql.run.getMapBestRuns(req.params.map, limit, ranked, function(err, rows){
             if(err){
-                res.json({error:"Error ghosts"});
+                res.json({error:"Error bests"});
                 return;
             }
             res.json(rows);
         });
     });
 
-    router.get("player/:user/:ranked/:id", function(req, res){
+    router.get("/ghosts/:map/:limit", function(req, res){
+        var limit = 10;
+        if(req.params.limit){
+            limit = parseInt(req.params.limit);
+        }
 
+        if(req.connected){
+            
+            
+        }else{
+            mysql.run.getMapBestRuns(req.params.map, limit, ranked, function(err, rows){
+            if(err){
+                res.json({error:"Error bests"});
+                return;
+            }
+            res.json(rows);
+        });
+        }
     });
+
+
+
 }
