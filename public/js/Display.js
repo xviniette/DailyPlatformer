@@ -41,9 +41,12 @@ Display.prototype.render = function(){
 	}
 
 	var ghosts = this.client.ghosts;
+	this.ctx.textAlign = "center"; 
 	for(var i in ghosts){
 		this.ctx.fillStyle = "yellow";
 		this.ctx.fillRect(ghosts[i].x - ghosts[i].radius, ghosts[i].y - ghosts[i].radius, ghosts[i].radius * 2, ghosts[i].radius * 2);
+		this.ctx.fillStyle = "black";
+		this.ctx.fillText(ghosts[i].pseudo, ghosts[i].x, ghosts[i].y  - ghosts[i].radius - 5); 
 	}
 
 	var player = this.client.player;

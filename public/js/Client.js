@@ -66,7 +66,11 @@ Client.prototype.initialize = function(){
 
 	this.ghosts = [];
 	for(var i in this.runs){
-		var p = new Player({room:this});
+		var p = new Player({
+			room:this,
+			id:this.runs[i].id_u,
+			pseudo:this.runs[i].login
+		});
 		p.reset();
 		p.positions = JSON.parse(this.runs[i].positions);
 		this.ghosts.push(p);
@@ -94,10 +98,10 @@ Client.prototype.end = function(){
 		$.post("/run/upload/"+this.map.id_m, {inputs:JSON.stringify(this.player.allInputs)}, function(data){
 			console.log(data);
 		});
-
 	}
 	this.started = false;
-	this.initialize();
+	var _this = this;
+	_this.initialize();
 }
 
 Client.prototype.update = function(){
