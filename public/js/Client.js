@@ -62,6 +62,7 @@ Client.prototype.initialize = function(){
 	
 	this.player.reset();
 	this.started = false;
+	this.startingTime = Date.now();
 
 
 	this.ghosts = [];
