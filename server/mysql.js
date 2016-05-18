@@ -68,13 +68,26 @@ module.exports = function(app){
             addRun:function(datas, callback){
                 db.query("INSERT INTO runs SET ?", datas, callback);
             },
-            getNbRun:function(map, ranked, callback){
+            getNbRuns:function(map, ranked, callback){
                 if(ranked !== null){
-                    db.query("SELECT COUNT(*) as nb FROM runs r, users u WHERE id_m = ? AND ranked = ? AND r.id_u = u.id_u;", [map, ranked, limit], callback);
+                    db.query("SELECT COUNT(*) as nb FROM runs WHERE id_m = ? AND ranked = ?;", [map, ranked], callback);
                 }else{
-                    db.query("SELECT COUNT(*) as nb FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u;", [map, limit], callback);
+                    db.query("SELECT COUNT(*) as nb FROM runs WHERE id_m = ?", [map], callback);
                 }
             },
+            getUserRunPosition:function(user, map, ranked, callback){
+                
+            },
+            getFollowingRuns:function(user, map, ranked, callback){
+                if(ranked !== null){
+                    db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.follower = ? AND r.id_m = ? AND r.ranked = ? AND f.followed = r.id_u AND f.followed = u.id_u;", [user, map, ranked], callback);
+                }else{
+                    db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.follower = ? AND r.id_m = ? AND f.followed = r.id_u AND f.followed = u.id_u;", [map, limit], callback);
+                }
+            },
+            getOffsetRuns:function(map, offset, callback){
+                db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND r.ranked = 1 AND r.id_u = u.id_u ORDER BY time ASC LIMIT 0,1 OFFSET ?;", [map, offset], callback);
+            }
         },
         skin:{
             getSkin:function(id, callback){
@@ -91,11 +104,29 @@ module.exports = function(app){
             },
             addUserSkin:function(user, skin, callback){
                 db.query("INSERT INTO user_skin SET ?", {id_u:user, id_s:skin}, callback);
+            },
+            getNonUserSkins:function(user, callback){
+                
             }
         },
         follow:{
             getFollowsUser:function(id, callback){
-                db.query("SELECT * FROM follower WHERE id_s = ?;", [id], callback);
+                db.query("SELECT u.id_u, u.login FROM followers f, user u WHERE f.id_follower = ? AND f.id_followed = u.id_u;", [id], callback);
+            },
+            getFollowersUser:function(id, callback){
+                db.query("SELECT u.id_u, u.login FROM followers f, user u WHERE f.id_followed = ? AND f.id_follower = u.id_u;", [id], callback);
+            },
+            addFollow:function(follower, followed, callback){
+                db.query("SELECT * FROM followers WHERE id_follower = ? AND id_followed = ?;", [follower, followed], function(err, rows){
+                    if(rows.length == 0){
+                        db.query("INSERT INTO followers SET ?", {id_follower:follower, id_followed:followed}, callback);
+                    }else{
+                        callback(true);
+                    }
+                });
+            },
+            deleteFollow:function(follower, followed, callback){
+                db.query("DELETE FROM followers WHERE id_follower = ? AND id_followed = ?;", [follower, followed], callback);
             }
         }
     }

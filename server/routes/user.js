@@ -77,13 +77,47 @@ module.exports = function(app, router){
         }
     });
 
-    router.get("/ranking", function(req, res){
-        mysql.user.getUserByLogin(req.params.login, function(err, rows){
-            if(rows.length > 0){
-                res.json(rows[0]);
-            }else{
-                res.json(null);
-            }
-        });
+    router.get("/follow/:user", function(req, res){
+        if(req.connected){
+            mysql.user.getUserByLogin(req.params.user, function(err, rows){
+                if(!err && rows.length > 0){
+                    if(req.connected.id != rows[0].id_u){
+                        mysql.follow.addFollow(req.connected.id, rows[0].id_u, function(err, rows){
+                            if(err){
+                                res.json({error:"Already following"});
+                            }else{
+                                res.json({msg:"Player followed"});
+                            }
+                        });
+                    }else{
+                        res.json({msg:"You can't follow yourself"});
+                    }
+                }else{
+                    res.json({error:"Player not exist"});
+                }
+            });
+        }else{
+            res.status(401).json({
+                error: "You must be logged in"
+            });
+        }
+    });
+
+    router.get("/unfollow/:user", function(req, res){
+        if(req.connected){
+            mysql.user.getUserByLogin(req.params.user, function(err, rows){
+                if(!err && rows.length > 0){
+                    mysql.follow.deleteFollow(req.connected.id, rows[0].id_u, function(err, rows){
+                        res.json({msg:"Player unfollowed"});
+                    });
+                }else{
+                    res.json({error:"Player not exist"});
+                }
+            });
+        }else{
+            res.status(401).json({
+                error: "You must be logged in"
+            });
+        }
     });
 }
