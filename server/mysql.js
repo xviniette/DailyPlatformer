@@ -67,9 +67,16 @@ module.exports = function(app){
             },
             addRun:function(datas, callback){
                 db.query("INSERT INTO runs SET ?", datas, callback);
-            }
+            },
+            getNbRun:function(map, ranked, callback){
+                if(ranked !== null){
+                    db.query("SELECT COUNT(*) as nb FROM runs r, users u WHERE id_m = ? AND ranked = ? AND r.id_u = u.id_u;", [map, ranked, limit], callback);
+                }else{
+                    db.query("SELECT COUNT(*) as nb FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u;", [map, limit], callback);
+                }
+            },
         },
-        skins:{
+        skin:{
             getSkin:function(id, callback){
                 db.query("SELECT * FROM skins WHERE id_s = ?;", [id], callback);
             },
@@ -84,6 +91,11 @@ module.exports = function(app){
             },
             addUserSkin:function(user, skin, callback){
                 db.query("INSERT INTO user_skin SET ?", {id_u:user, id_s:skin}, callback);
+            }
+        },
+        follow:{
+            getFollowsUser:function(id, callback){
+                db.query("SELECT * FROM follower WHERE id_s = ?;", [id], callback);
             }
         }
     }
