@@ -13,7 +13,7 @@ module.exports = function(app, router){
         var weights = {
             0:745,
             1:200,
-            2:50
+            2:50,
             3:5
         };
 

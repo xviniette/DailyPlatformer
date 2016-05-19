@@ -13,11 +13,11 @@ module.exports = function(app, router) {
         if (req.body.inputs) {
             try {
                 var inputs = JSON.parse(req.body.inputs);
-                mysql.map.getMap(req.params.map, function(err, rows) {
-                    if (!err && rows.length > 0) {
-
+                mysql.map.getMap(req.params.map)
+                .then(function(rows){
+                    if(rows.length > 0){
                         var valid = runValidator.runIsValid(rows[0], inputs);
-                        if (valid !== false) {
+                        if(valid !== false){
                             var dataRun = {
                                 id_m: rows[0].id_m,
                                 id_u: req.connected.id,
@@ -25,78 +25,62 @@ module.exports = function(app, router) {
                                 positions: JSON.stringify(valid.positions),
                                 ranked: true
                             }
-
-                            mysql.map.getCurrentMap(function(err, row) {
-                                var ranked = 0;
-                                if (row[0].id_m == dataRun.id_m) {
-                                    ranked = 1;
-                                }
-                                dataRun.ranked = ranked;
-                                mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, function(err, rows) {
-                                    if (rows.length > 0) {
-                                        if (rows[0].time > dataRun.time) {
-                                            mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun, function(err, rows) {
-                                                console.log(err);
-                                            });
-                                            res.json({
-                                                time: dataRun.time,
-                                                best: true
-                                            });
-                                        } else {
-                                            res.json({
-                                                time: dataRun.time,
-                                                best: false
-                                            });
-                                        }
-                                    } else {
-                                        mysql.run.addRun(dataRun, function(err, rows) {});
-                                        res.json({
-                                            time: dataRun.time,
-                                            best: true
-                                        });
-                                    }
-                                });
-                            });
-                        } else {
-                            res.json({
-                                error: "Probleme run"
-                            });
                         }
+
+                        mysql.map.getCurrentMap()
+                        .then(function(row){
+                            var ranked = 0;
+                            if (row[0].id_m == dataRun.id_m) {
+                                ranked = 1;
+                            }
+                            dataRun.ranked = ranked;
+
+                            mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked)
+                            .then(function(rows){
+                                if (rows.length > 0) {
+                                    if (rows[0].time > dataRun.time) {
+                                        mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun);
+                                        res.json({time: dataRun.time,best: true});
+                                    } else {
+                                        res.json({time: dataRun.time, best: false});
+                                    }
+                                } else {
+                                    mysql.run.addRun(dataRun);
+                                    res.json({time: dataRun.time,best: true});
+                                }
+                            });
+                        });  
                     }
                 });
             } catch (e) {
-                res.json({
-                    error: "Inputs problem"
-                })
+                res.json({error: "Inputs problem"});
                 return;
             }
-        } else {
-            res.json({
-                error: "Inputs needed"
-            });
+        }else{
+            res.json({error:"Inputs needed"});
         }
+
     });
 
-    router.get("/best/:map/:ranked?/:limit?", function(req, res) {
-        var limit = 100;
-        if (req.params.limit) {
-            limit = parseInt(req.params.limit);
-        }
 
-        var ranked = null;
-        if (req.params.ranked) {
-            ranked = (req.params.ranked == 1) ? 1 : 0;
-        }
+router.get("/best/:map/:ranked?/:limit?", function(req, res) {
+    var limit = 100;
+    if (req.params.limit) {
+        limit = parseInt(req.params.limit);
+    }
 
-        mysql.run.getMapBestRuns(req.params.map, limit, ranked, function(err, rows) {
-            if (err) {
-                res.json({
-                    error: "Error bests"
-                });
-                return;
-            }
-            res.json(rows);
-        });
+    var ranked = null;
+    if (req.params.ranked) {
+        ranked = (req.params.ranked == 1) ? 1 : 0;
+    }
+
+    mysql.run.getMapBestRuns(req.params.map, limit, ranked)
+    .then(function(rows){
+        res.json(rows);
+    })
+    .catch(function(err){
+        res.json({error:"Error getting bests"});
     });
+});
 
 }
