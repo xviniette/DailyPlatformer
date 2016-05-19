@@ -157,7 +157,7 @@ module.exports = function (app) {
             },
             getUserMapRun: function (user, map, ranked) {
                 return new Promise(function (resolve, reject) {
-                    db.query("SELECT * FROM runs WHERE id_u = ? AND id_m = ? AND ranked = ?;", [user, map, ranked], function (err, rows) {
+                    db.query("SELECT r.*, u.login FROM runs r, users u WHERE r.id_u = ? AND r.id_m = ? AND r.ranked = ? AND r.id_u = u.id_u;", [user, map, ranked], function (err, rows) {
                         if (err) {
                             reject(err);
                             return;
@@ -217,7 +217,7 @@ module.exports = function (app) {
             getFollowingRuns: function (user, map, ranked) {
                 if (ranked !== null) {
                     return new Promise(function (resolve, reject) {
-                        db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.follower = ? AND r.id_m = ? AND r.ranked = ? AND f.followed = r.id_u AND f.followed = u.id_u;", [user, map, ranked], function (err, rows) {
+                        db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.id_follower = ? AND r.id_m = ? AND r.ranked = ? AND f.id_followed = r.id_u AND f.id_followed = u.id_u;", [user, map, ranked], function (err, rows) {
                             if (err) {
                                 reject(err);
                                 return;

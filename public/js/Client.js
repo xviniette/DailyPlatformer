@@ -47,7 +47,7 @@ Client.prototype.loadMap = function(id){
 Client.prototype.loadRuns = function(callback){
 	var _this = this;
 	if(this.map != null){
-		$.get("/run/best/"+this.map.id_m, function(data){
+		$.get("/run/ghost/"+this.map.id_m+"/100", function(data){
 			_this.runs = data;
 			callback();
 		});

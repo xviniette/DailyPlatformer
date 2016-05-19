@@ -104,12 +104,54 @@ module.exports = function (app, router) {
 
                                 if (rows[0].id_m == map.id_m) {
                                     //CURRENT
-                                    
                                     if (req.connected) {
-                                        
+                                        var ghosts = [];
+
+                                        mysql.run.getUserMapRun(req.connected.id, map.id_m, 1)
+                                            .then(function (rows) {
+                                                if (rows.length > 0) {
+                                                    limit--;
+                                                    rows[0].me = true;
+                                                    ghosts.push(rows[0]);
+                                                }
+                                                return mysql.run.getFollowingRuns(req.connected.id, map.id_m, 1);
+                                            })
+                                            .then(function (rows) {
+                                                for (var i in rows) {
+                                                    rows[i].follow = true;
+                                                }
+
+                                                ghosts = ghosts.concat(rows);
+                                                limit -= rows.length;
+                                                if (limit < 1) {
+                                                    limit = 1;
+                                                }
+                                                return mysql.run.getMapBestRuns(req.params.map, limit, 1)
+                                            })
+                                            .then(function (rows) {
+                                                for (var i in rows) {
+                                                    var alreadyIn = false;
+                                                    for (var j in ghosts) {
+                                                        if (ghosts[i].id_u == rows[i].id_u) {
+                                                            alreadyIn = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (!alreadyIn) {
+                                                        ghosts.push(rows[i]);
+                                                    }
+                                                }
+                                                res.json(ghosts);
+                                            })
+                                            .catch(function (err) {
+                                                res.json({ error: "Error getting ghost" });
+                                            });
+
+
+
                                     } else {
                                         //NOT CONNECTED
-                                        mysql.run.getMapBestRuns(req.params.map, limit, true)
+                                        mysql.run.getMapBestRuns(req.params.map, limit, 1)
                                             .then(function (rows) {
                                                 res.json(rows);
                                             })
@@ -118,11 +160,18 @@ module.exports = function (app, router) {
                                             });
                                     }
 
-
                                 } else {
                                     //NOT CURRENT => master/gold/silver/bronze
+                                    var nb = 0;
+                                    var ghosts = [];
                                     
-                                    
+                                  /*  mysql.run.getNbRuns(map.id_m, 1)
+                                        .then(function (rows) {
+                                            nb = rows.nb;
+                                            return mysql.run.
+                                        });*/
+                                    res.json([]);
+
                                 }
 
 
