@@ -21,4 +21,10 @@ var routes = require('./server/routes.js')(app);
 
 app.listen(3000);
 
+process.on('uncaughtException', function (err) {
+  console.log((new Date).toUTCString() + ' uncaughtException:', err.message)
+  console.log(err.stack)
+  process.exit(1)
+})
+
 
