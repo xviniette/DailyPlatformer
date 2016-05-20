@@ -162,16 +162,79 @@ module.exports = function (app, router) {
 
                                 } else {
                                     //NOT CURRENT => master/gold/silver/bronze
-                                    var nb = 0;
+                                    var nbRun = 0;
                                     var ghosts = [];
+                                    var percentage = {
+                                        gold:0.1,
+                                        silver:0.3,
+                                        bronze:0.6
+                                    };
                                     
-                                  /*  mysql.run.getNbRuns(map.id_m, 1)
+                                    mysql.run.getNbRuns(map.id_m, 1)
                                         .then(function (rows) {
-                                            nb = rows.nb;
-                                            return mysql.run.
-                                        });*/
-                                    res.json([]);
+                                            nbRun = rows.nb;
+                                            return mysql.run.getOffsetRuns(map.id_m, 0);
+                                        })
+                                        .then(function(rows){
+                                            if(rows.length > 0){
+                                                rows[0].medal = 0;
+                                                ghosts.push(rows[0]);
+                                            }
 
+                                            return mysql.run.getOffsetRuns(map.id_m, Math.floor(nbRun * percentage.gold));
+                                        })
+                                        .then(function(rows){
+                                            if(rows.length > 0){
+                                                rows[0].medal = 1;
+                                                ghosts.push(rows[0]);
+                                            }
+
+                                            return mysql.run.getOffsetRuns(map.id_m, Math.floor(nbRun * percentage.silver));
+                                        })
+                                        .then(function(rows){
+                                            if(rows.length > 0){
+                                                rows[0].medal = 2;
+                                                ghosts.push(rows[0]);
+                                            }
+
+                                            return mysql.run.getOffsetRuns(map.id_m, Math.floor(nbRun * percentage.bronze));
+                                        })
+                                        .then(function(rows){
+                                            if(rows.length > 0){
+                                                rows[0].medal = 3;
+                                                ghosts.push(rows[0]);
+                                            }
+
+                                            if(req.connected){
+
+                                                mysql.run.getUserMapRun(req.connected.id, map.id_m, 1)
+                                                .then(function(rows){
+                                                    if(rows.length > 0){
+                                                        rows[0].me = true;
+                                                        ghosts.push(rows[0]);
+                                                    }
+
+                                                    return mysql.run.getFollowingRuns(req.connected.id, map.id_m, 1);
+                                                })
+                                                .then(function(rows){
+                                                    for(var i in rows){
+                                                        rows[i].follow = true;
+                                                        ghosts.push(rows[i]);
+                                                    }
+
+                                                    res.json(ghosts);
+                                                })
+                                                .catch(function(err){
+                                                    res.json(ghosts);
+                                                });
+
+                                            }else{
+                                                res.json(ghosts);
+                                            }
+                                        }).
+                                        catch(function(err){
+                                            res.json(ghosts);
+                                        });
                                 }
 
 
