@@ -83,6 +83,17 @@ module.exports = function (app) {
                         resolve(rows);
                     });
                 });
+            },
+            getRanking:function(attribute, limit, offset){
+                return new Promise(function (resolve, reject) {
+                    db.query("SELECT * FROM users ORDER BY ? DESC LIMIT 0,1 OFFSET ?;", [attribute, limit, offset], function (err, rows) {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(rows);
+                    });
+                });
             }
         },
         map: {
