@@ -17,6 +17,24 @@ module.exports = function (app, router) {
             3: 5
         };
 
+        var computedWeights = {};
+        var sum = 0;
+        for(var i in weights){
+            sum += weights[i];
+            computedWeights[i] = sum;
+        }
+
+        var random = Math.floor(Math.random() * sum + 1);
+        rarity = 0;
+        for(var i in computedWeights){
+            if(computedWeights[i] >= random){
+                rarity = i;
+                break;
+            }
+        }
+
+        res.json({drop:rarity});
+
     });
 
 }
