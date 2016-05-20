@@ -125,4 +125,29 @@ router.get("/unfollow/:user", function(req, res){
         }
     });
 });
+
+router.get("/ranking/:attribute?/:limit?/:offset?", function(req, res){
+    var attribute = "elo";
+    if(req.params.attribute && req.params.attribute == "xp"){
+        attribute = "xp";
+    }
+
+    var limit = 100;
+    if(req.params.limit){
+        limit = parseInt(req.params.limit);
+    }
+
+    var offset = 0;
+    if(req.params.offset){
+        offset = parseInt(req.params.offset);
+    }
+
+    mysql.user.getRanking(attribute, limit, offset)
+    .then(function(rows){
+        res.json(rows);
+    })
+    .catch(function(err){
+        res.json({error:"Error getting ranking"});
+    });
+});
 }

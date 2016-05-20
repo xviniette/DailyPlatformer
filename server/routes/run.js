@@ -67,10 +67,15 @@ module.exports = function (app, router) {
     });
 
 
-    router.get("/best/:map/:ranked?/:limit?", function (req, res) {
+    router.get("/best/:map/:ranked?/:limit?/:offset?", function (req, res) {
         var limit = 100;
         if (req.params.limit) {
             limit = parseInt(req.params.limit);
+        }
+
+        var offset = 0;
+        if (req.params.offset) {
+            offset = parseInt(req.params.offset);
         }
 
         var ranked = null;

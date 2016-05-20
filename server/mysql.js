@@ -86,7 +86,7 @@ module.exports = function (app) {
             },
             getRanking:function(attribute, limit, offset){
                 return new Promise(function (resolve, reject) {
-                    db.query("SELECT * FROM users ORDER BY ? DESC LIMIT 0,1 OFFSET ?;", [attribute, limit, offset], function (err, rows) {
+                    db.query("SELECT * FROM users ORDER BY ? DESC LIMIT ? OFFSET ?;", [attribute, limit, offset], function (err, rows) {
                         if (err) {
                             reject(err);
                             return;
@@ -132,10 +132,10 @@ module.exports = function (app) {
             }
         },
         run: {
-            getMapBestRuns: function (map, limit, ranked) {
+            getMapBestRuns: function (map, limit, ranked, offset) {
                 if (ranked !== null) {
                     return new Promise(function (resolve, reject) {
-                        db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND ranked = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT 0,?;", [map, ranked, limit], function (err, rows) {
+                        db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND ranked = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT ? OFFSET ?;", [map, ranked, limit, offset], function (err, rows) {
                             if (err) {
                                 reject(err);
                                 return;
@@ -145,7 +145,7 @@ module.exports = function (app) {
                     });
                 } else {
                     return new Promise(function (resolve, reject) {
-                        db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT 0,?;", [map, limit], function (err, rows) {
+                        db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT ? OFFSET ?;", [map, limit, offset], function (err, rows) {
                             if (err) {
                                 reject(err);
                                 return;
