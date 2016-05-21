@@ -58,7 +58,11 @@ Player.prototype.update = function(inp){
 	this.friction = {x:0.3,y:0.9};
 	this.bounce = {x:0,y:0};
 
-	this.allInputs.push(inp);
+    var inputs = [];
+    for(var i in inp){
+        inputs.push(i);
+    }
+	this.allInputs.push(inputs.join(","));
 	
 	if(inp.u){
 		if(this.onGround){

@@ -95,7 +95,7 @@ Client.prototype.starting = function(keys){
 
 Client.prototype.end = function(){
 	if(this.started){
-		$.post("/run/upload/"+this.map.id_m, {inputs:JSON.stringify(this.player.allInputs)}, function(data){
+		$.post("/run/upload/"+this.map.id_m, {inputs:this.player.allInputs.join("|")}, function(data){
 			console.log(data);
 		});
 	}

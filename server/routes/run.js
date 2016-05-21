@@ -13,7 +13,14 @@ module.exports = function (app, router) {
 
         if (req.body.inputs) {
             try {
-                var inputs = JSON.parse(req.body.inputs);
+                var inputs = req.body.inputs.split("|");
+                for(var i in inputs){
+                    var inps = inputs[i].split(",");
+                    inputs[i] = {};
+                    for(var j in inps){
+                        inputs[i][inps[j]] = true;
+                    }
+                }
                 mysql.map.getMap(req.params.map, function (err, rows) {
                     if (err) {
                         return;
@@ -160,7 +167,7 @@ module.exports = function (app, router) {
                                     for (var i in rows) {
                                         var alreadyIn = false;
                                         for (var j in ghosts) {
-                                            if (ghosts[i].id_u == rows[i].id_u) {
+                                            if (ghosts[j].id_u == rows[i].id_u) {
                                                 alreadyIn = true;
                                                 break;
                                             }
