@@ -29,8 +29,6 @@ var Player = function(json){
 
 	this.inputs = [];
 	this.lastInput = null;
-	this.lastAction = 0;
-	this.nbInputsExecutable = 0;
 
 	this.allInputs = [];
 
@@ -56,15 +54,12 @@ Player.prototype.reset = function(){
 
 Player.prototype.update = function(inp){
 	var delta = 0.016;
-	var tilesize = this.room.map.tilesize;
-	var tiles = this.room.map.tiles;
 
 	this.friction = {x:0.3,y:0.9};
 	this.bounce = {x:0,y:0};
 
 	this.allInputs.push(inp);
 	
-	var baseInput = {}
 	if(inp.u){
 		if(this.onGround){
 			this.dy = -this.jump * delta;
@@ -77,12 +72,6 @@ Player.prototype.update = function(inp){
 	if(inp.r){
 		this.dx = this.speed * delta;
 		this.direction = 1;
-	}
-	if(inp.k && this.lastInput != null && !this.lastInput.k){
-		this.kick(inp.svTime);
-	}
-	if(inp.d && this.lastInput != null && !this.lastInput.d){
-		this.up(inp.svTime);
 	}
 	this.lastInput = inp;
 	this.physic();

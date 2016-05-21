@@ -25,7 +25,7 @@ module.exports = function (app, router) {
         }
 
         var random = Math.floor(Math.random() * sum + 1);
-        rarity = 0;
+        var rarity = 0;
         for(var i in computedWeights){
             if(computedWeights[i] >= random){
                 rarity = i;
