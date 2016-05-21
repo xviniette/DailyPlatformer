@@ -94,7 +94,7 @@ module.exports = function (app, router) {
             ranked = (req.params.ranked == 1) ? 1 : 0;
         }
 
-        mysql.run.getMapBestRuns(req.params.map, limit, ranked, function (err, rows) {
+        mysql.run.getMapBestRuns(req.params.map, limit, ranked, offset, function (err, rows) {
             if (err) {
                 res.json({ error: "Error getting bests" });
                 return;
@@ -156,7 +156,7 @@ module.exports = function (app, router) {
                                 if (limit < 1) {
                                     limit = 1;
                                 }
-                                mysql.run.getMapBestRuns(req.params.map, limit, 1, function (err, rows) {
+                                mysql.run.getMapBestRuns(req.params.map, limit, 1, 0, function (err, rows) {
                                     for (var i in rows) {
                                         var alreadyIn = false;
                                         for (var j in ghosts) {
@@ -175,7 +175,7 @@ module.exports = function (app, router) {
                         });
                     } else {
                         //GUEST
-                        mysql.run.getMapBestRuns(req.params.map, limit, 1, function (err, rows) {
+                        mysql.run.getMapBestRuns(req.params.map, limit, 1, 0, function (err, rows) {
                             if (err) {
                                 res.json({ error: "Error getting ghosts" });
                                 return;

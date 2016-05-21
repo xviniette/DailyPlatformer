@@ -54,7 +54,7 @@ module.exports = function (app) {
         run: {
             getMapBestRuns: function (map, limit, ranked, offset, callback) {
                 if (ranked !== null) {
-                    db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND ranked = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT ? OFFSET ?;", [map, ranked, limit, offset], callback);
+                    db.query("SELECT r.*, u.login FROM runs r, users u WHERE u.id_u = r.id_u AND r.id_m = ? AND r.ranked = ? ORDER BY time ASC LIMIT ? OFFSET ?;", [map, ranked, limit, offset], callback);
                 } else {
                     db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT ? OFFSET ?;", [map, limit, offset], callback);
                 }
