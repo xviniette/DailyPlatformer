@@ -85,7 +85,7 @@ module.exports = function (app) {
                 if (ranked !== null) {
                     db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.id_follower = ? AND r.id_m = ? AND r.ranked = ? AND f.id_followed = r.id_u AND f.id_followed = u.id_u;", [user, map, ranked], callback);
                 } else {
-                    db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.follower = ? AND r.id_m = ? AND f.followed = r.id_u AND f.followed = u.id_u;", [map, limit], callback);
+                    db.query("SELECT r.*, u.login FROM runs r, followers f, users u WHERE f.follower = ? AND r.id_m = ? AND f.followed = r.id_u AND f.followed = u.id_u;", [user, map], callback);
                 }
             },
             getOffsetRuns: function (map, offset, callback) {
@@ -130,13 +130,7 @@ module.exports = function (app) {
                 });
             },
             deleteFollow: function (follower, followed, callback) {
-                db.query("DELETE FROM followers WHERE id_follower = ? AND id_followed = ?;", [follower, followed], function (err, rows) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    resolve(rows);
-                });
+                db.query("DELETE FROM followers WHERE id_follower = ? AND id_followed = ?;", [follower, followed], callback);
             }
         }
     }

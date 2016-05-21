@@ -38,7 +38,7 @@ module.exports = function (app, router) {
                                 if (row[0].id_m == dataRun.id_m) {
                                     ranked = 1;
                                 }
-                                
+
 
                                 dataRun.ranked = ranked;
 
@@ -61,8 +61,10 @@ module.exports = function (app, router) {
 
                             });
                         } else {
+                            res.json({ error: "Error path" });
                         }
                     } else {
+                        res.json({ error: "Map doesn't exist" });
                     }
                 });
             } catch (e) {

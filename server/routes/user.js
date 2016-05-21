@@ -4,6 +4,7 @@ module.exports = function (app, router) {
     var mysql = app.get("MysqlManager");
 
     router.post("/register", function (req, res) {
+
         if (req.connected) {
             res.json({ error: "Already logged." });
             return;
@@ -15,17 +16,26 @@ module.exports = function (app, router) {
                     return;
                 }
                 if (rows.length == 0) {
-                    var user = {
+                    var userToSave = {
                         login: req.body.login,
-                        password: req.body.password
-                    };
+                        password: req.body.password,
+                        elo:1200,
+                        xp:0,
+                        golds:0,
+                        gems:0
+                    }
 
-                    mysql.user.addUser(user, function (err, rows) {
+                    mysql.user.addUser(userToSave, function (err, rows) {
                         if (err) {
                             res.json({ error: "Problem adding user." });
                             return;
                         }
-                        user.id = rows.insertId;
+                        var user = {
+                            id:rows.insertId,
+                            login: req.body.login,
+                            password: req.body.password
+                        };
+
                         var token = jwt.sign(user, app.get('config').jwtKey);
                         mysql.user.updateUser({ token: token }, user.id);
                         res.json({ token: token });
@@ -96,25 +106,25 @@ module.exports = function (app, router) {
             res.status(401).json({ error: "You must be logged in" });
             return;
         }
-        mysql.user.getUserByLogin(req.params.user, function(err, rows){
-            if(err){
+        mysql.user.getUserByLogin(req.params.user, function (err, rows) {
+            if (err) {
                 return;
-            } 
+            }
             if (rows.length > 0) {
-                    if (req.connected.id != rows[0].id_u) {
-                        mysql.follow.addFollow(req.connected.id, rows[0].id_u, function (err, rows) {
-                            if (err) {
-                                res.json({ error: "Already following" });
-                                return;
-                            }
-                            res.json({ msg: "Player followed" });
-                        });
-                    } else {
-                        res.json({ msg: "You can't follow yourself" });
-                    }
+                if (req.connected.id != rows[0].id_u) {
+                    mysql.follow.addFollow(req.connected.id, rows[0].id_u, function (err, rows) {
+                        if (err) {
+                            res.json({ error: "Already following" });
+                            return;
+                        }
+                        res.json({ msg: "Player followed" });
+                    });
                 } else {
-                    res.json({ error: "Player not exist" });
+                    res.json({ msg: "You can't follow yourself" });
                 }
+            } else {
+                res.json({ error: "Player not exist" });
+            }
         });
     });
 
@@ -125,12 +135,12 @@ module.exports = function (app, router) {
         }
         mysql.user.getUserByLogin(req.params.user, function (err, rows) {
             if (rows.length > 0) {
-                mysql.follow.deleteFollow(req.connected.id, rows[0].id_u, function(err, rows){
-                    if(err){
+                mysql.follow.deleteFollow(req.connected.id, rows[0].id_u, function (err, rows) {
+                    if (err) {
                         res.json({ msg: "Error unfollowing" });
                         return;
                     }
-                     res.json({ msg: "Player unfollowed" });
+                    res.json({ msg: "Player unfollowed" });
                 });
             } else {
                 res.json({ error: "Player not exist" });
@@ -154,13 +164,13 @@ module.exports = function (app, router) {
             offset = parseInt(req.params.offset);
         }
 
-        mysql.user.getRanking(attribute, limit, offset, function(err, rows){
-            if(err){
+        mysql.user.getRanking(attribute, limit, offset, function (err, rows) {
+            if (err) {
                 res.json({ error: "Error getting ranking" });
                 return;
             }
-                res.json(rows);
-            
+            res.json(rows);
+
         });
     });
 }
