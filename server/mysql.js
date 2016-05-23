@@ -100,7 +100,7 @@ module.exports = function (app) {
                 db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = ? AND us.id_s = s.id;", [user, skin], callback);
             },
             getUserSkins: function (user, callback) {
-                db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id;", [id], callback);
+                db.query("SELECT DISTINCT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id;", [id], callback);
             },
             getAllSkins: function (callback) {
                 db.query("SELECT * FROM skins;", callback);
@@ -109,7 +109,7 @@ module.exports = function (app) {
                 db.query("INSERT INTO user_skin SET ?", { id_u: user, id_s: skin }, callback);
             },
             getNonUserSkins: function (user, callback) {
-
+                db.query("SELECT * FROM skins s WHERE NOT EXISTS (SELECT * FROM user_skin us WHERE us.id_s = s.id_s AND us.id_u = ?) ORDER BY s.rarity;", [user], callback);
             }
         },
         follow: {
