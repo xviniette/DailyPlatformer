@@ -8,9 +8,9 @@ var config  = require('./server/config.js');
 app.set("config", config);
 
 var MysqlManager = require('./server/mysql.js')(app);
-var CronManager = require('./server/CronManager.js')(app);
-
 app.set("MysqlManager", MysqlManager);
+
+var CronManager = require('./server/CronManager.js')(app);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
