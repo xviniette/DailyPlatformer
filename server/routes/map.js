@@ -15,6 +15,10 @@ module.exports = function (app, router) {
         })
     });
 
+    router.get("/nextTime", function(req, res){
+        res.json({timeleft:app.get("CronManager").getNextTime()});
+    });
+
     router.get("/all", function (req, res) {
         mysql.map.getAllMaps(function (err, rows) {
             if (err) {

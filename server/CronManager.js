@@ -43,7 +43,7 @@ module.exports = function (app) {
     }
     
     var job = new CronJob({
-        cronTime: '00 30 * * * *',
+        cronTime: '00 00 00,12 * * *',
         onTick: function() {
             console.log("OK CRON");
         },

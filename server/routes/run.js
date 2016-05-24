@@ -36,37 +36,103 @@ module.exports = function (app, router) {
                                 positions: JSON.stringify(valid.positions),
                                 ranked: 1
                             }
-
-                            mysql.map.getCurrentMap(function (err, row) {
-                                if (err) {
+                            mysql.user.getUserById(req.connected.id, function(err, rows){
+                                if(err){
                                     return;
                                 }
-                                var ranked = 0;
-                                if (row[0].id_m == dataRun.id_m) {
-                                    ranked = 1;
+                                if(rows.length == 0){
+                                    return;
                                 }
 
+                                var user = rows[0];
 
-                                dataRun.ranked = ranked;
 
-                                mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, function (err, rows) {
+                                mysql.map.getCurrentMap(function (err, row) {
                                     if (err) {
                                         return;
                                     }
-                                    if (rows.length > 0) {
-                                        if (rows[0].time > dataRun.time) {
-                                            mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun);
-                                            res.json({ time: dataRun.time, best: true });
-                                        } else {
-                                            res.json({ time: dataRun.time, best: false });
-                                        }
-                                    } else {
-                                        mysql.run.addRun(dataRun);
-                                        res.json({ time: dataRun.time, best: true });
+                                    var ranked = 0;
+                                    if (row[0].id_m == dataRun.id_m) {
+                                        ranked = 1;
                                     }
-                                });
+
+                                    var medailsRewards = {
+                                        0:{
+                                            golds:100,
+                                            xp:100,
+                                        },
+                                        1:{
+                                            golds:80,
+                                            xp:80,
+                                        },
+                                        2:{
+                                            golds:50,
+                                            xp:50,
+                                        },
+                                        3:{
+                                            golds:30,
+                                            xp:30,
+                                        }
+                                    };
+
+
+                                    dataRun.ranked = ranked;
+
+                                    mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, function (err, rows) {
+                                        if (err) {
+                                            return;
+                                        }
+                                        if (rows.length > 0) {
+                                            //Peut être new meilleur temps
+                                            if (rows[0].time > dataRun.time) {
+                                                if(!dataRun.ranked){
+                                                    //Non ranked => check des medailles
+                                                    getMedailsRuns(dataRun.id_m, function(medails){
+                                                        var newMedail = getMedail(dataRun.time, medails);
+                                                        var oldMedail = getMedail(rows[0].time, medails);
+                                                        if(newMedail < oldMedail){
+                                                            var rewards = getRewards(medailsRewards, newMedail, oldMedail);
+                                                            if(rewards != null){
+                                                                for(var i in rewards){
+                                                                    if(user[i] != undefined){
+                                                                        user[i] += rewards[i];
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        mysql.user.updateUser({golds:user.golds, xp:user.xp}, user.id_u);
+                                                        res.json({ time: dataRun.time, best: true, medail:newMedail, rewards:rewards});
+                                                    });
+
+}else{
+                                                    //Ranked on save
+                                                    res.json({ time: dataRun.time, best: true });
+                                                    mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun);
+                                                }
+                                            } else {
+                                                res.json({ time: dataRun.time, best: false });
+                                            }
+                                        } else {
+                                            //Nouveau temps
+                                            var newMedail = getMedail(dataRun.time, medails);
+                                            var rewards = getRewards(medailsRewards, newMedail);
+                                            if(rewards != null){
+                                                for(var i in rewards){
+                                                    if(user[i] != undefined){
+                                                        user[i] += rewards[i];
+                                                    }
+                                                }
+                                            }
+                                            mysql.run.addRun(dataRun);
+                                            mysql.user.updateUser({golds:user.golds, xp:user.xp}, user.id_u);
+                                            res.json({ time: dataRun.time, best: true });
+                                        }
+                                    });
 
 });
+});
+
+
 } else {
     res.json({ error: "Error path" });
 }
@@ -263,7 +329,35 @@ var getMedailsRuns = function(mapid, callback){
 });
 
 }
-return {
-    getMedailsRuns:getMedailsRuns();
+
+var getMedail = function(time, medails){
+    for(var i in medails){
+        if(time <= medails[i]){
+            return i;
+        }
+    }
+    return null;
+}
+
+var getRewards = function(rewards, newmedail, oldmedail){
+    var toreward = {};
+    if(oldmedail == null){
+        oldmedail = 10;
+    }
+    if(oldmedail >= newmedail){
+        null;
+    }
+
+    for(var i = oldmedail - 1; i >= newmedail; i--){
+        if(rewards[i]){
+            for(var j in rewards[i]){
+                if(toreward[j] == undefined){
+                    toreward[j] = 0;
+                }
+                toreward[j] += rewards[i][j];
+            }
+        }
+    }
+    return toreward;
 }
 }

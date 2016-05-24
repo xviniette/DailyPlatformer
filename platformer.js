@@ -11,6 +11,7 @@ var MysqlManager = require('./server/mysql.js')(app);
 app.set("MysqlManager", MysqlManager);
 
 var CronManager = require('./server/CronManager.js')(app);
+app.set("CronManager", CronManager);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
