@@ -66,79 +66,79 @@ module.exports = function (app, router) {
                                     }
                                 });
 
-                            });
-                        } else {
-                            res.json({ error: "Error path" });
-                        }
-                    } else {
-                        res.json({ error: "Map doesn't exist" });
-                    }
-                });
-            } catch (e) {
-                res.json({ error: "Inputs problem" });
-                return;
-            }
-        } else {
-            res.json({ error: "Inputs needed" });
+});
+} else {
+    res.json({ error: "Error path" });
+}
+} else {
+    res.json({ error: "Map doesn't exist" });
+}
+});
+} catch (e) {
+    res.json({ error: "Inputs problem" });
+    return;
+}
+} else {
+    res.json({ error: "Inputs needed" });
+}
+
+});
+
+
+router.get("/best/:map/:ranked?/:limit?/:offset?", function (req, res) {
+    var limit = 100;
+    if (req.params.limit) {
+        limit = parseInt(req.params.limit);
+    }
+
+    var offset = 0;
+    if (req.params.offset) {
+        offset = parseInt(req.params.offset);
+    }
+
+    var ranked = null;
+    if (req.params.ranked) {
+        ranked = (req.params.ranked == 1) ? 1 : 0;
+    }
+
+    mysql.run.getMapBestRuns(req.params.map, limit, ranked, offset, function (err, rows) {
+        if (err) {
+            res.json({ error: "Error getting bests" });
+            return;
+        }
+        res.json(rows);
+    })
+});
+
+router.get("/ghost/:map/:limit?", function (req, res) {
+    var limit = 10;
+    if (req.params.limit) {
+        limit = parseInt(req.params.limit);
+    }
+
+    mysql.map.getMap(req.params.map, function (err, rows) {
+        if (err) {
+            res.json({ error: "Error getting map" });
+            return;
         }
 
-    });
-
-
-    router.get("/best/:map/:ranked?/:limit?/:offset?", function (req, res) {
-        var limit = 100;
-        if (req.params.limit) {
-            limit = parseInt(req.params.limit);
+        if (rows.length == 0) {
+            res.json({ error: "Map doesn't exist" });
+            return;
         }
+        var map = rows[0];
 
-        var offset = 0;
-        if (req.params.offset) {
-            offset = parseInt(req.params.offset);
-        }
-
-        var ranked = null;
-        if (req.params.ranked) {
-            ranked = (req.params.ranked == 1) ? 1 : 0;
-        }
-
-        mysql.run.getMapBestRuns(req.params.map, limit, ranked, offset, function (err, rows) {
+        mysql.map.getCurrentMap(function (err, rows) {
             if (err) {
-                res.json({ error: "Error getting bests" });
+                res.json({ error: "Error getting current map" });
                 return;
             }
-            res.json(rows);
-        })
-    });
-
-    router.get("/ghost/:map/:limit?", function (req, res) {
-        var limit = 10;
-        if (req.params.limit) {
-            limit = parseInt(req.params.limit);
-        }
-
-        mysql.map.getMap(req.params.map, function (err, rows) {
-            if (err) {
-                res.json({ error: "Error getting map" });
-                return;
-            }
-
             if (rows.length == 0) {
-                res.json({ error: "Map doesn't exist" });
+                res.json({ error: "No current map" });
                 return;
             }
-            var map = rows[0];
 
-            mysql.map.getCurrentMap(function (err, rows) {
-                if (err) {
-                    res.json({ error: "Error getting current map" });
-                    return;
-                }
-                if (rows.length == 0) {
-                    res.json({ error: "No current map" });
-                    return;
-                }
-
-                if (rows[0].id_m == map.id_m) {
+            if (rows[0].id_m == map.id_m) {
                     //CURRENT
                     if (req.connected) {
                         //CONNECTED
@@ -179,8 +179,8 @@ module.exports = function (app, router) {
                                     res.json(ghosts);
                                 });
                             });
-                        });
-                    } else {
+});
+} else {
                         //GUEST
                         mysql.run.getMapBestRuns(req.params.map, limit, 1, 0, function (err, rows) {
                             if (err) {
@@ -194,61 +194,76 @@ module.exports = function (app, router) {
                     //NOT CURRENT => master/gold/silver/bronze
                     var nbRun = 0;
                     var ghosts = [];
-                    var percentage = {
-                        gold: 0.1,
-                        silver: 0.3,
-                        bronze: 0.6
-                    };
 
-                    mysql.run.getNbRuns(map.id_m, 1, function (err, rows) {
-                        nbRun = rows[0].nb;
-                        mysql.run.getOffsetRuns(map.id_m, 0, function (err, rows) {
-                            if (rows.length > 0) {
-                                rows[0].medal = 0;
-                                ghosts.push(rows[0]);
-                            }
-                            mysql.run.getOffsetRuns(map.id_m, Math.floor(nbRun * percentage.gold), function (err, rows) {
+                    getMedailsRuns(map.id_m, function(medails){
+                        if(medails){
+                            ghosts = medails;
+                        }
+
+                        if (req.connected) {
+                            mysql.run.getUserMapRun(req.connected.id, map.id_m, 1, function (err, rows) {
                                 if (rows.length > 0) {
-                                    rows[0].medal = 1;
+                                    rows[0].me = true;
                                     ghosts.push(rows[0]);
                                 }
-                                mysql.run.getOffsetRuns(map.id_m, Math.floor(nbRun * percentage.silver), function (err, rows) {
-                                    if (rows.length > 0) {
-                                        rows[0].medal = 2;
-                                        ghosts.push(rows[0]);
+                                mysql.run.getFollowingRuns(req.connected.id, map.id_m, 1, function (err, rows) {
+                                    for (var i in rows) {
+                                        rows[i].follow = true;
+                                        ghosts.push(rows[i]);
                                     }
-                                    mysql.run.getOffsetRuns(map.id_m, Math.floor(nbRun * percentage.bronze), function (err, rows) {
-                                        if (rows.length > 0) {
-                                            rows[0].medal = 3;
-                                            ghosts.push(rows[0]);
-                                        }
-                                        if (req.connected) {
-                                            mysql.run.getUserMapRun(req.connected.id, map.id_m, 1, function (err, rows) {
-                                                if (rows.length > 0) {
-                                                    rows[0].me = true;
-                                                    ghosts.push(rows[0]);
-                                                }
-                                                mysql.run.getFollowingRuns(req.connected.id, map.id_m, 1, function (err, rows) {
-                                                    for (var i in rows) {
-                                                        rows[i].follow = true;
-                                                        ghosts.push(rows[i]);
-                                                    }
 
-                                                    res.json(ghosts);
-                                                });
-                                            });
-                                        } else {
-                                            res.json(ghosts);
-                                        }
-                                    });
+                                    res.json(ghosts);
                                 });
-                            })
-                        });
+                            });
+                        } else {
+                            res.json(ghosts);
+                        }
                     });
+}
+})
+});
+});
 
+var getMedailsRuns = function(mapid, callback){
+    var nbRun = 0;
+    var ghosts = [];
+    var percentage = {
+        gold: 0.1,
+        silver: 0.3,
+        bronze: 0.6
+    };
+
+    mysql.run.getNbRuns(mapid, 1, function (err, rows) {
+        nbRun = rows[0].nb;
+        mysql.run.getOffsetRuns(mapid, 0, function (err, rows) {
+            if (rows.length > 0) {
+                rows[0].medal = 0;
+                ghosts.push(rows[0]);
+            }
+            mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.gold), function (err, rows) {
+                if (rows.length > 0) {
+                    rows[0].medal = 1;
+                    ghosts.push(rows[0]);
                 }
+                mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.silver), function (err, rows) {
+                    if (rows.length > 0) {
+                        rows[0].medal = 2;
+                        ghosts.push(rows[0]);
+                    }
+                    mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.bronze), function (err, rows) {
+                        if (rows.length > 0) {
+                            rows[0].medal = 3;
+                            ghosts.push(rows[0]);
+                        }
+                        callback(ghosts);
+                    });
+                });
             })
-
         });
-    });
+});
+
+}
+return {
+    getMedailsRuns:getMedailsRuns();
+}
 }
