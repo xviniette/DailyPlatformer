@@ -108,7 +108,7 @@ module.exports = function (app) {
                 db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = ? AND us.id_s = s.id_s;", [user, skin], callback);
             },
             getUserSkins: function (user, callback) {
-                db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id_s;", [user], callback);
+                db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id_s ORDER BY s.rarity DESC;", [user], callback);
             },
             getAllSkins: function (callback) {
                 db.query("SELECT * FROM skins;", callback);

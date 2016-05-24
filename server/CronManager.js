@@ -1,9 +1,8 @@
 var CronJob = require('cron').CronJob;
 var moment = require('moment');
-var trueskill = require("trueskill");
+//var trueskill = require("trueskill");
 
 module.exports = function (app) {
-
     var mysql = app.get("MysqlManager");
 
     var endRankedCompute = function () {
