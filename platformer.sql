@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.12
+-- version 4.5.1
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 24 Mai 2016 à 00:31
--- Version du serveur :  5.6.16
--- Version de PHP :  5.5.11
+-- Généré le :  Mar 24 Mai 2016 à 11:37
+-- Version du serveur :  10.1.9-MariaDB
+-- Version de PHP :  5.6.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données :  `platformer`
@@ -26,12 +26,11 @@ SET time_zone = "+00:00";
 -- Structure de la table `followers`
 --
 
-CREATE TABLE IF NOT EXISTS `followers` (
-  `id_f` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `followers` (
+  `id_f` int(11) NOT NULL,
   `id_follower` int(11) DEFAULT NULL,
-  `id_followed` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_f`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `id_followed` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -39,21 +38,19 @@ CREATE TABLE IF NOT EXISTS `followers` (
 -- Structure de la table `maps`
 --
 
-CREATE TABLE IF NOT EXISTS `maps` (
-  `id_m` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `maps` (
+  `id_m` int(11) NOT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `tiles` text,
-  `player` text,
-  PRIMARY KEY (`id_m`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+  `player` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `maps`
 --
 
 INSERT INTO `maps` (`id_m`, `timestamp`, `tiles`, `player`) VALUES
-(1, 1463221362, '[[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,2,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]]', '{"x":100,"y":100}'),
-(2, 1463221362, '[[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,2,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]]', '{"x":100,"y":100}');
+(1, 1463221362, '[[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,1,2,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]]', '{"x":100,"y":100}');
 
 -- --------------------------------------------------------
 
@@ -61,26 +58,25 @@ INSERT INTO `maps` (`id_m`, `timestamp`, `tiles`, `player`) VALUES
 -- Structure de la table `runs`
 --
 
-CREATE TABLE IF NOT EXISTS `runs` (
-  `id_r` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `runs` (
+  `id_r` int(11) NOT NULL,
   `id_m` int(11) DEFAULT NULL,
   `id_u` int(11) DEFAULT NULL,
   `id_s` int(11) DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
   `positions` text,
   `ranked` tinyint(1) DEFAULT NULL,
-  `message` text,
-  PRIMARY KEY (`id_r`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+  `message` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `runs`
 --
 
 INSERT INTO `runs` (`id_r`, `id_m`, `id_u`, `id_s`, `time`, `positions`, `ranked`, `message`) VALUES
-(10, 2, 6, NULL, 1488, '[{"x":102,"y":100,"t":0},{"x":113,"y":108,"t":100},{"x":113,"y":123,"t":200},{"x":129,"y":141,"t":300},{"x":130,"y":161,"t":400},{"x":145,"y":181,"t":500},{"x":160,"y":203,"t":600},{"x":176,"y":225,"t":700},{"x":191,"y":246,"t":800},{"x":206,"y":268,"t":900},{"x":222,"y":226,"t":1000},{"x":237,"y":206,"t":1100},{"x":252,"y":206,"t":1200},{"x":268,"y":216,"t":1300},{"x":283,"y":230,"t":1400},{"x":279,"y":181,"t":1500},{"x":274,"y":173,"t":1550}]', 1, NULL),
-(11, 2, 7, NULL, 1488, '[{"x":102,"y":100,"t":0},{"x":111,"y":108,"t":100},{"x":111,"y":123,"t":200},{"x":118,"y":141,"t":300},{"x":130,"y":161,"t":400},{"x":145,"y":181,"t":500},{"x":160,"y":203,"t":600},{"x":176,"y":225,"t":700},{"x":191,"y":246,"t":800},{"x":206,"y":268,"t":900},{"x":222,"y":226,"t":1000},{"x":237,"y":206,"t":1100},{"x":252,"y":206,"t":1200},{"x":268,"y":216,"t":1300},{"x":283,"y":230,"t":1400},{"x":284,"y":181,"t":1500},{"x":279,"y":173,"t":1550}]', 1, NULL),
-(12, 2, 8, NULL, 1664, '[{"x":102,"y":100,"t":0},{"x":111,"y":108,"t":100},{"x":111,"y":123,"t":200},{"x":111,"y":141,"t":300},{"x":111,"y":161,"t":400},{"x":121,"y":181,"t":500},{"x":136,"y":203,"t":600},{"x":152,"y":225,"t":700},{"x":167,"y":246,"t":800},{"x":182,"y":268,"t":900},{"x":198,"y":270,"t":1000},{"x":213,"y":248,"t":1100},{"x":229,"y":213,"t":1200},{"x":244,"y":204,"t":1300},{"x":259,"y":210,"t":1400},{"x":275,"y":223,"t":1500},{"x":288,"y":218,"t":1600},{"x":281,"y":176,"t":1700},{"x":278,"y":173,"t":1733}]', 1, NULL);
+(1, 1, 1, NULL, 1568, '[{"x":102,"y":100,"t":0},{"x":111,"y":108,"t":100},{"x":111,"y":123,"t":200},{"x":111,"y":141,"t":300},{"x":126,"y":161,"t":400},{"x":142,"y":181,"t":500},{"x":157,"y":203,"t":600},{"x":172,"y":225,"t":700},{"x":188,"y":246,"t":800},{"x":203,"y":268,"t":900},{"x":218,"y":270,"t":1000},{"x":234,"y":221,"t":1100},{"x":249,"y":205,"t":1200},{"x":264,"y":207,"t":1300},{"x":280,"y":218,"t":1400},{"x":286,"y":218,"t":1500},{"x":281,"y":176,"t":1600},{"x":278,"y":173,"t":1633}]', 1, NULL),
+(2, 1, 2, NULL, 2864, '[{"x":97,"y":100,"t":0},{"x":86,"y":108,"t":100},{"x":86,"y":123,"t":200},{"x":98,"y":141,"t":300},{"x":112,"y":161,"t":400},{"x":112,"y":181,"t":500},{"x":102,"y":203,"t":600},{"x":112,"y":225,"t":700},{"x":128,"y":230,"t":800},{"x":143,"y":236,"t":900},{"x":147,"y":250,"t":1000},{"x":147,"y":267,"t":1100},{"x":147,"y":287,"t":1200},{"x":155,"y":308,"t":1300},{"x":170,"y":329,"t":1400},{"x":185,"y":330,"t":1500},{"x":201,"y":330,"t":1600},{"x":216,"y":330,"t":1700},{"x":231,"y":330,"t":1800},{"x":247,"y":330,"t":1900},{"x":262,"y":330,"t":2000},{"x":271,"y":281,"t":2100},{"x":255,"y":265,"t":2200},{"x":240,"y":267,"t":2300},{"x":231,"y":239,"t":2400},{"x":247,"y":210,"t":2500},{"x":262,"y":204,"t":2600},{"x":277,"y":212,"t":2700},{"x":288,"y":226,"t":2800},{"x":283,"y":192,"t":2900},{"x":273,"y":173,"t":2983}]', 1, NULL),
+(3, 1, 3, NULL, 1968, '[{"x":102,"y":100,"t":0},{"x":111,"y":108,"t":100},{"x":111,"y":123,"t":200},{"x":113,"y":141,"t":300},{"x":129,"y":161,"t":400},{"x":144,"y":181,"t":500},{"x":155,"y":203,"t":600},{"x":145,"y":225,"t":700},{"x":142,"y":246,"t":800},{"x":157,"y":268,"t":900},{"x":173,"y":270,"t":1000},{"x":188,"y":270,"t":1100},{"x":203,"y":270,"t":1200},{"x":219,"y":258,"t":1300},{"x":234,"y":216,"t":1400},{"x":249,"y":204,"t":1500},{"x":265,"y":208,"t":1600},{"x":280,"y":221,"t":1700},{"x":295,"y":218,"t":1800},{"x":299,"y":176,"t":1900},{"x":284,"y":171,"t":2000},{"x":279,"y":173,"t":2050}]', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -88,13 +84,12 @@ INSERT INTO `runs` (`id_r`, `id_m`, `id_u`, `id_s`, `time`, `positions`, `ranked
 -- Structure de la table `skins`
 --
 
-CREATE TABLE IF NOT EXISTS `skins` (
-  `id_s` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `skins` (
+  `id_s` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `rarity` int(11) DEFAULT NULL,
-  `price` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_s`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=141 ;
+  `price` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `skins`
@@ -248,26 +243,26 @@ INSERT INTO `skins` (`id_s`, `title`, `rarity`, `price`) VALUES
 -- Structure de la table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id_u` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id_u` int(11) NOT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `token` text,
   `elo` int(11) DEFAULT NULL,
+  `sigma` int(11) DEFAULT NULL,
   `xp` int(11) DEFAULT NULL,
   `golds` int(11) DEFAULT NULL,
-  `gems` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_u`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+  `gems` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `users`
 --
 
-INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `xp`, `golds`, `gems`) VALUES
-(6, 'ElGringo', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibG9naW4iOiJFbEdyaW5nbyIsInBhc3N3b3JkIjoiYXplIiwiaWF0IjoxNDYzODUxODY1fQ.ZUzoJoC_5RqSOvHMDQvoctQ0vaT3MSYFVdXVncHeKr0', 1200, 0, 0, 0),
-(7, 'pelo', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibG9naW4iOiJwZWxvIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjM4NTE5Nzd9.IdpQGYgWRSyM8O5bVJ5X1jPwlBuwPaajU5kCFEAjZhU', 1200, 0, 0, 0),
-(8, 'elbazia', '123', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibG9naW4iOiJlbGJhemlhIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE0NjM4NjcwMDN9.CbI8856IYSzLD9UsOD4kmKekH3vJg5RhS0vtcFIwNvk', 1200, 0, 999977699, 9000);
+INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `sigma`, `xp`, `golds`, `gems`) VALUES
+(1, 'elbazia', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJlbGJhemlhIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQwODE1MTl9.OfPqyjKSZieMpZE0HvLwyzhE_kEX-7CYh84VFs3eIgo', 2137, 255, 2500, 2500, 0),
+(2, 'elgringo', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJlbGdyaW5nbyIsInBhc3N3b3JkIjoiYXplIiwiaWF0IjoxNDY0MDgxNTY5fQ.ecdH90SCSsev-jLsPq--ZJnIJpRb2OC86rHKy2IFnSc', 863, 255, 500, 500, 0),
+(3, 'coco', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibG9naW4iOiJjb2NvIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQwODE2MTB9.DOKbxsYqdlp-cbNJQ1KBtU3QqCLn6qZRiSFiw2H3SNs', 1500, 204, 1500, 1500, 0);
 
 -- --------------------------------------------------------
 
@@ -275,22 +270,86 @@ INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `xp`, `golds`,
 -- Structure de la table `user_skin`
 --
 
-CREATE TABLE IF NOT EXISTS `user_skin` (
-  `id_us` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user_skin` (
+  `id_us` int(11) NOT NULL,
   `id_u` int(11) DEFAULT NULL,
-  `id_s` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_us`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+  `id_s` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `user_skin`
+-- Index pour les tables exportées
 --
 
-INSERT INTO `user_skin` (`id_us`, `id_u`, `id_s`) VALUES
-(9, 8, 47),
-(10, 8, 48),
-(11, 8, 2);
+--
+-- Index pour la table `followers`
+--
+ALTER TABLE `followers`
+  ADD PRIMARY KEY (`id_f`);
 
+--
+-- Index pour la table `maps`
+--
+ALTER TABLE `maps`
+  ADD PRIMARY KEY (`id_m`);
+
+--
+-- Index pour la table `runs`
+--
+ALTER TABLE `runs`
+  ADD PRIMARY KEY (`id_r`);
+
+--
+-- Index pour la table `skins`
+--
+ALTER TABLE `skins`
+  ADD PRIMARY KEY (`id_s`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id_u`);
+
+--
+-- Index pour la table `user_skin`
+--
+ALTER TABLE `user_skin`
+  ADD PRIMARY KEY (`id_us`);
+
+--
+-- AUTO_INCREMENT pour les tables exportées
+--
+
+--
+-- AUTO_INCREMENT pour la table `followers`
+--
+ALTER TABLE `followers`
+  MODIFY `id_f` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `maps`
+--
+ALTER TABLE `maps`
+  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT pour la table `runs`
+--
+ALTER TABLE `runs`
+  MODIFY `id_r` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT pour la table `skins`
+--
+ALTER TABLE `skins`
+  MODIFY `id_s` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id_u` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT pour la table `user_skin`
+--
+ALTER TABLE `user_skin`
+  MODIFY `id_us` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
