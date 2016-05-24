@@ -19,7 +19,8 @@ module.exports = function (app, router) {
                     var userToSave = {
                         login: req.body.login,
                         password: req.body.password,
-                        elo:1200,
+                        elo:app.get("config").elo,
+                        sigma:Math.round(app.get("config").elo/3),
                         xp:0,
                         golds:0,
                         gems:0

@@ -1,5 +1,6 @@
 var CronJob = require('cron').CronJob;
 var moment = require('moment');
+var trueskill = require("trueskill");
 
 module.exports = function (app) {
 
@@ -12,22 +13,39 @@ module.exports = function (app) {
             }
             if (rows.length > 0) {
                 mysql.run.getAllRankedRuns(rows[0].id_m, function(err, rows){
-                    console.log(rows); 
-                    
-                    
+                    var nb = rows.length - 1;
+
+                    for(var i in rows){
+                        rows[i].golds += Math.round(((nb-i)/nb)*400 + 100);
+                        rows[i].xp += Math.round(((nb-i)/nb)*400 + 100);
+
+
+                        rows[i].skill = [rows[i].elo, rows[i].sigma];
+                        rows[i].rank = parseInt(i)+1;
+                    }
+
+                    trueskill.AdjustPlayers(rows);
+
+                    for(var i in rows){
+                        rows[i].elo = Math.round(rows[i].skill[0]);
+                        rows[i].sigma = Math.round(rows[i].skill[1]);
+
+                        mysql.user.updateUser({
+                            golds:rows[i].golds,
+                            xp:rows[i].xp,
+                            elo:rows[i].elo,
+                            sigma:rows[i].sigma
+                        }, rows[i].id_u);
+                    }
                 });
             }
         });
     }
     
-    setTimeout(function(){
-        endRankedCompute();
-    }, 0);
-
     var job = new CronJob({
-        cronTime: '00 00 00,12 * * *',
+        cronTime: '00 30 * * * *',
         onTick: function() {
-            console.log("OK");
+            console.log("OK CRON");
         },
         start: false
     });

@@ -5,5 +5,6 @@ module.exports = {
         user     : 'root',
         password : '',
         database : 'platformer'
-    }
+    },
+    elo:1500
 }

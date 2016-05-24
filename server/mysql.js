@@ -37,7 +37,12 @@ module.exports = function (app) {
                 db.query("UPDATE users SET ? WHERE ?", [datas, { id_u: id }], callback);
             },
             getRanking: function (attribute, limit, offset, callback) {
-                db.query("SELECT * FROM users ORDER BY ? DESC LIMIT ? OFFSET ?;", [attribute, limit, offset], callback);
+                if(attribute == "xp"){
+                    db.query("SELECT * FROM users ORDER BY xp DESC LIMIT ? OFFSET ?;", [limit, offset], callback);
+                }else{
+                    db.query("SELECT * FROM users ORDER BY elo DESC LIMIT ? OFFSET ?;", [limit, offset], callback);
+                }
+                
             }
         },
         map: {
