@@ -46,6 +46,15 @@ module.exports = function (app, router) {
 
                                 var user = rows[0];
 
+                                //CHECK RANDOM REWARDS
+                                var rreward = null;
+
+                                var rrewardsweigths = {
+
+                                };
+
+
+
 
                                 mysql.map.getCurrentMap(function (err, row) {
                                     if (err) {
@@ -101,16 +110,16 @@ module.exports = function (app, router) {
                                                             }
                                                         }
                                                         mysql.user.updateUser({golds:user.golds, xp:user.xp}, user.id_u);
-                                                        res.json({ time: dataRun.time, best: true, medail:newMedail, rewards:rewards});
+                                                        res.json({ time: dataRun.time, best: true, medail:newMedail, rewards:rewards, rreward:rreward});
                                                     });
 
 }else{
                                                     //Ranked on save
-                                                    res.json({ time: dataRun.time, best: true });
+                                                    res.json({ time: dataRun.time, best: true, rreward:rreward});
                                                     mysql.run.updateUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, dataRun);
                                                 }
                                             } else {
-                                                res.json({ time: dataRun.time, best: false });
+                                                res.json({ time: dataRun.time, best: false, rreward:rreward});
                                             }
                                         } else {
                                             //Nouveau temps
@@ -125,7 +134,7 @@ module.exports = function (app, router) {
                                             }
                                             mysql.run.addRun(dataRun);
                                             mysql.user.updateUser({golds:user.golds, xp:user.xp}, user.id_u);
-                                            res.json({ time: dataRun.time, best: true });
+                                            res.json({ time: dataRun.time, best: true, rreward:rreward});
                                         }
                                     });
 

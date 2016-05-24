@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 24 Mai 2016 à 11:37
+-- Généré le :  Mar 24 Mai 2016 à 18:08
 -- Version du serveur :  10.1.9-MariaDB
 -- Version de PHP :  5.6.15
 
@@ -329,7 +329,7 @@ ALTER TABLE `followers`
 -- AUTO_INCREMENT pour la table `maps`
 --
 ALTER TABLE `maps`
-  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT pour la table `runs`
 --
