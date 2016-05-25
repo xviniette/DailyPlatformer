@@ -1,5 +1,6 @@
 var runValidator = require("../RunValidator.js");
 var moment = require("moment");
+var async = require("async");
 
 module.exports = function (app, router) {
     var mysql = app.get("MysqlManager");
@@ -340,7 +341,7 @@ router.get("/ghost/:map/:limit?", function (req, res) {
 });
 });
 
-var getMedailsRuns = function (mapid, callback) {
+var getMedailsRuns = function (mapid, cb) {
     var nbRun = 0;
     var ghosts = [];
     var percentage = {
@@ -349,34 +350,69 @@ var getMedailsRuns = function (mapid, callback) {
         bronze: 0.6
     };
 
-    mysql.run.getNbRuns(mapid, 1, function (err, rows) {
-        nbRun = rows[0].nb;
-        mysql.run.getOffsetRuns(mapid, 0, function (err, rows) {
-            if (rows.length > 0) {
-                rows[0].medal = 0;
-                ghosts.push(rows[0]);
-            }
-            mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.gold), function (err, rows) {
-                if (rows.length > 0) {
-                    rows[0].medal = 1;
-                    ghosts.push(rows[0]);
+    async.waterfall([
+        function(callback){
+            mysql.run.getNbRuns(mapid, 1, function (err, rows) {
+                if(err){
+                    callback(err);
+                    return;
                 }
-                mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.silver), function (err, rows) {
-                    if (rows.length > 0) {
-                        rows[0].medal = 2;
-                        ghosts.push(rows[0]);
-                    }
-                    mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.bronze), function (err, rows) {
-                        if (rows.length > 0) {
-                            rows[0].medal = 3;
-                            ghosts.push(rows[0]);
+                nbRun = rows[0].nb;
+                callback(null, nbRun);
+            });
+        },
+        function(nbRun, callback){
+            async.parallel([
+                function(callback2){
+                    mysql.run.getOffsetRuns(mapid, 0, function (err, rows) {
+                        if (!err && rows.length > 0) {
+                            rows[0].medal = 0;
+                            callback2(null, rows[0]);
+                        }else{
+                            callback2(true);
                         }
-                        callback(ghosts);
                     });
+                },
+                function(callback2){
+                    mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.gold), function (err, rows) {
+                        if (!err && rows.length > 0) {
+                            rows[0].medal = 1;
+                            callback2(null, rows[0]);
+                        }else{
+                            callback2(true);
+                        }
+                    });
+                },
+                function(callback2){
+                    mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.silver), function (err, rows) {
+                        if (!err && rows.length > 0) {
+                            rows[0].medal = 2;
+                            callback2(null, rows[0]);
+                        }else{
+                            callback2(true);
+                        }
+                    });
+                },
+                function(callback2){
+                    mysql.run.getOffsetRuns(mapid, Math.floor(nbRun * percentage.bronze), function (err, rows) {
+                        if (!err && rows.length > 0) {
+                            rows[0].medal = 3;
+                            callback2(null, rows[0]);
+                        }else{
+                            callback2(true);
+                        }
+                    });
+                }
+                ], function(err, res){
+                    for(var i in res){
+                        ghosts.push(res[i]);
+                    }
+                    callback();
                 });
-            })
+        }
+        ], function(err, res){
+            cb(ghosts);
         });
-});
 
 }
 
