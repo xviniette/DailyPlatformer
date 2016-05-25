@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+var async = require("async");
 
 module.exports = function (app, router) {
     var mysql = app.get("MysqlManager");
@@ -10,25 +11,36 @@ module.exports = function (app, router) {
             return;
         }
         if (req.body.login && req.body.password && req.body.login.length > 0 && req.body.password.length > 0) {
-            mysql.user.getUserByLogin(req.body.login, function (err, rows) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                if (rows.length == 0) {
-                    var userToSave = {
-                        login: req.body.login,
-                        password: req.body.password,
-                        elo:app.get("config").elo,
-                        sigma:Math.round(app.get("config").elo/3),
-                        xp:0,
-                        golds:0,
-                        gems:0
-                    }
 
+            async.waterfall([
+                function(callback){
+                    mysql.user.getUserByLogin(req.body.login, function (err, rows) {
+                        if (err) {
+                            callback(err);
+                            return;
+                        }
+                        if (rows.length == 0) {
+                            var userToSave = {
+                                login: req.body.login,
+                                password: req.body.password,
+                                elo:app.get("config").elo,
+                                sigma:Math.round(app.get("config").elo/3),
+                                xp:0,
+                                golds:0,
+                                gems:0
+                            }
+                            callback(null, userToSave);
+                        }else{
+                            res.json({ error: "Login already taken." });
+                            callback(true);
+                        }
+                    });
+                },
+                function(userToSave, callback){
                     mysql.user.addUser(userToSave, function (err, rows) {
                         if (err) {
                             res.json({ error: "Problem adding user." });
+                            callback(err);
                             return;
                         }
                         var user = {
@@ -40,11 +52,10 @@ module.exports = function (app, router) {
                         var token = jwt.sign(user, app.get('config').jwtKey);
                         mysql.user.updateUser({ token: token }, user.id);
                         res.json({ token: token });
+                        callback(null);
                     });
-                } else {
-                    res.json({ error: "Login already taken." });
                 }
-            });
+                ]);
         } else {
             res.json({ error: "Login or password are empty." });
         }
