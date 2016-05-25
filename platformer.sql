@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.12
+-- version 4.5.1
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mer 25 Mai 2016 à 00:07
--- Version du serveur :  5.6.16
--- Version de PHP :  5.5.11
+-- Généré le :  Mer 25 Mai 2016 à 17:47
+-- Version du serveur :  10.1.9-MariaDB
+-- Version de PHP :  5.6.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données :  `platformer`
@@ -26,12 +26,11 @@ SET time_zone = "+00:00";
 -- Structure de la table `followers`
 --
 
-CREATE TABLE IF NOT EXISTS `followers` (
-  `id_f` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `followers` (
+  `id_f` int(11) NOT NULL,
   `id_follower` int(11) DEFAULT NULL,
-  `id_followed` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_f`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `id_followed` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -39,13 +38,12 @@ CREATE TABLE IF NOT EXISTS `followers` (
 -- Structure de la table `maps`
 --
 
-CREATE TABLE IF NOT EXISTS `maps` (
-  `id_m` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `maps` (
+  `id_m` int(11) NOT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `tiles` text,
-  `player` text,
-  PRIMARY KEY (`id_m`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+  `player` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `maps`
@@ -61,17 +59,16 @@ INSERT INTO `maps` (`id_m`, `timestamp`, `tiles`, `player`) VALUES
 -- Structure de la table `runs`
 --
 
-CREATE TABLE IF NOT EXISTS `runs` (
-  `id_r` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `runs` (
+  `id_r` int(11) NOT NULL,
   `id_m` int(11) DEFAULT NULL,
   `id_u` int(11) DEFAULT NULL,
   `id_s` int(11) DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
   `positions` text,
   `ranked` tinyint(1) DEFAULT NULL,
-  `message` text,
-  PRIMARY KEY (`id_r`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+  `message` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `runs`
@@ -96,13 +93,12 @@ INSERT INTO `runs` (`id_r`, `id_m`, `id_u`, `id_s`, `time`, `positions`, `ranked
 -- Structure de la table `skins`
 --
 
-CREATE TABLE IF NOT EXISTS `skins` (
-  `id_s` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `skins` (
+  `id_s` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `rarity` int(11) DEFAULT NULL,
-  `price` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_s`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=141 ;
+  `price` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `skins`
@@ -256,8 +252,8 @@ INSERT INTO `skins` (`id_s`, `title`, `rarity`, `price`) VALUES
 -- Structure de la table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id_u` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id_u` int(11) NOT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `token` text,
@@ -266,23 +262,24 @@ CREATE TABLE IF NOT EXISTS `users` (
   `xp` int(11) DEFAULT NULL,
   `golds` int(11) DEFAULT NULL,
   `gems` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_u`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `nextdrop` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `users`
 --
 
-INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `sigma`, `xp`, `golds`, `gems`) VALUES
-(1, 'elbazia', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJlbGJhemlhIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQwODE1MTl9.OfPqyjKSZieMpZE0HvLwyzhE_kEX-7CYh84VFs3eIgo', 2137, 255, 2500, 2500, 0),
-(2, 'elgringo', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJlbGdyaW5nbyIsInBhc3N3b3JkIjoiYXplIiwiaWF0IjoxNDY0MDgxNTY5fQ.ecdH90SCSsev-jLsPq--ZJnIJpRb2OC86rHKy2IFnSc', 863, 255, 500, 500, 0),
-(3, 'coco', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibG9naW4iOiJjb2NvIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQwODE2MTB9.DOKbxsYqdlp-cbNJQ1KBtU3QqCLn6qZRiSFiw2H3SNs', 1500, 204, 1500, 1500, 0),
-(4, 'mdr', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibG9naW4iOiJtZHIiLCJwYXNzd29yZCI6ImF6ZSIsImlhdCI6MTQ2NDEyMjUxN30.jpJELPTIEp2b3H1IclaF79iViY4ZXIs7iFAERTYfqiY', 1500, 500, 0, 0, 0),
-(5, 'lol', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibG9naW4iOiJsb2wiLCJwYXNzd29yZCI6ImF6ZSIsImlhdCI6MTQ2NDEyMjUzMX0.v1cr9PFKKjmX61t0RmJZgU9xIwVprjiXUPmT1ISD7xk', 1500, 500, 0, 0, 0),
-(6, 'juif', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibG9naW4iOiJqdWlmIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQxMjI1NDR9.a9Eo8p27vY8IzW2ZIMma1gqe4uRAcTiUXyFdM_pRaag', 1500, 500, 0, 0, 0),
-(7, 'caca', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibG9naW4iOiJjYWNhIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQxMjI1NTh9.tjLQ8-36Gzh7Zi3GL46viwG69ciRwNc8g_yKspivluE', 1500, 500, 0, 0, 0),
-(8, 'pipi', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibG9naW4iOiJwaXBpIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQxMjI1NzV9.TdF_bs7vwVzv4AxLIqv4iJmHyabVtsKv49_nPP4e6OQ', 1500, 500, 0, 0, 0),
-(9, 'xptdr', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwibG9naW4iOiJ4cHRkciIsInBhc3N3b3JkIjoiYXplIiwiaWF0IjoxNDY0MTIyNTk5fQ.cHhmhRTgR3752fW2G2IqDStb8i85HxYPr9t3USObu78', 1500, 500, 1470, 70, 0);
+INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `sigma`, `xp`, `golds`, `gems`, `nextdrop`) VALUES
+(1, 'elbazia', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJlbGJhemlhIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQwODE1MTl9.OfPqyjKSZieMpZE0HvLwyzhE_kEX-7CYh84VFs3eIgo', 2137, 255, 2500, 0, 1000, 0),
+(2, 'elgringo', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibG9naW4iOiJlbGdyaW5nbyIsInBhc3N3b3JkIjoiYXplIiwiaWF0IjoxNDY0MDgxNTY5fQ.ecdH90SCSsev-jLsPq--ZJnIJpRb2OC86rHKy2IFnSc', 863, 255, 500, 500, 0, 0),
+(3, 'coco', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibG9naW4iOiJjb2NvIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQwODE2MTB9.DOKbxsYqdlp-cbNJQ1KBtU3QqCLn6qZRiSFiw2H3SNs', 1500, 204, 1500, 1500, 0, 0),
+(4, 'mdr', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibG9naW4iOiJtZHIiLCJwYXNzd29yZCI6ImF6ZSIsImlhdCI6MTQ2NDEyMjUxN30.jpJELPTIEp2b3H1IclaF79iViY4ZXIs7iFAERTYfqiY', 1500, 500, 0, 0, 0, 0),
+(5, 'lol', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibG9naW4iOiJsb2wiLCJwYXNzd29yZCI6ImF6ZSIsImlhdCI6MTQ2NDEyMjUzMX0.v1cr9PFKKjmX61t0RmJZgU9xIwVprjiXUPmT1ISD7xk', 1500, 500, 0, 0, 0, 0),
+(6, 'juif', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibG9naW4iOiJqdWlmIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQxMjI1NDR9.a9Eo8p27vY8IzW2ZIMma1gqe4uRAcTiUXyFdM_pRaag', 1500, 500, 0, 0, 0, 0),
+(7, 'caca', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibG9naW4iOiJjYWNhIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQxMjI1NTh9.tjLQ8-36Gzh7Zi3GL46viwG69ciRwNc8g_yKspivluE', 1500, 500, 0, 0, 0, 0),
+(8, 'pipi', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibG9naW4iOiJwaXBpIiwicGFzc3dvcmQiOiJhemUiLCJpYXQiOjE0NjQxMjI1NzV9.TdF_bs7vwVzv4AxLIqv4iJmHyabVtsKv49_nPP4e6OQ', 1500, 500, 0, 0, 0, 0),
+(9, 'xptdr', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwibG9naW4iOiJ4cHRkciIsInBhc3N3b3JkIjoiYXplIiwiaWF0IjoxNDY0MTIyNTk5fQ.cHhmhRTgR3752fW2G2IqDStb8i85HxYPr9t3USObu78', 1500, 500, 1470, 70, 0, 0),
+(10, 'elbazia2', 'aze', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImxvZ2luIjoiZWxiYXppYTIiLCJwYXNzd29yZCI6ImF6ZSIsImlhdCI6MTQ2NDE4OTgwOX0.tqmr1jUzAXftqZV9vT-Z6HD6fbtsJxipMrfGswf5-Tg', 1500, 500, 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -290,33 +287,111 @@ INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `sigma`, `xp`,
 -- Structure de la table `user_skin`
 --
 
-CREATE TABLE IF NOT EXISTS `user_skin` (
-  `id_us` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user_skin` (
+  `id_us` int(11) NOT NULL,
   `id_u` int(11) DEFAULT NULL,
-  `id_s` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_us`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+  `id_s` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `user_skin`
 --
 
 INSERT INTO `user_skin` (`id_us`, `id_u`, `id_s`) VALUES
-(1, 9, 3),
-(2, 9, 30),
-(3, 9, 2),
-(4, 9, 67),
-(5, 9, 34),
-(6, 9, 98),
-(7, 9, 45),
-(8, 9, 55),
-(9, 9, 14),
-(10, 9, 6),
-(11, 9, 22),
-(12, 9, 31),
-(13, 9, 12),
-(14, 9, 47);
+(1, 1, 71),
+(2, 1, 50),
+(3, 1, 79),
+(4, 1, 8),
+(5, 1, 92),
+(6, 1, 2),
+(7, 1, 6),
+(8, 1, 68),
+(9, 1, 61),
+(10, 1, 82),
+(11, 1, 42),
+(12, 1, 57),
+(13, 1, 65),
+(14, 1, 47),
+(15, 1, 67),
+(16, 1, 17),
+(17, 1, 35),
+(18, 1, 12),
+(19, 1, 73);
 
+--
+-- Index pour les tables exportées
+--
+
+--
+-- Index pour la table `followers`
+--
+ALTER TABLE `followers`
+  ADD PRIMARY KEY (`id_f`);
+
+--
+-- Index pour la table `maps`
+--
+ALTER TABLE `maps`
+  ADD PRIMARY KEY (`id_m`);
+
+--
+-- Index pour la table `runs`
+--
+ALTER TABLE `runs`
+  ADD PRIMARY KEY (`id_r`);
+
+--
+-- Index pour la table `skins`
+--
+ALTER TABLE `skins`
+  ADD PRIMARY KEY (`id_s`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id_u`);
+
+--
+-- Index pour la table `user_skin`
+--
+ALTER TABLE `user_skin`
+  ADD PRIMARY KEY (`id_us`);
+
+--
+-- AUTO_INCREMENT pour les tables exportées
+--
+
+--
+-- AUTO_INCREMENT pour la table `followers`
+--
+ALTER TABLE `followers`
+  MODIFY `id_f` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `maps`
+--
+ALTER TABLE `maps`
+  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT pour la table `runs`
+--
+ALTER TABLE `runs`
+  MODIFY `id_r` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+--
+-- AUTO_INCREMENT pour la table `skins`
+--
+ALTER TABLE `skins`
+  MODIFY `id_s` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id_u` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT pour la table `user_skin`
+--
+ALTER TABLE `user_skin`
+  MODIFY `id_us` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
