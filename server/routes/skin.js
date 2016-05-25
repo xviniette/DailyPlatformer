@@ -1,3 +1,5 @@
+var async = require("async");
+
 module.exports = function (app, router) {
     var mysql = app.get("MysqlManager");
 
@@ -26,193 +28,247 @@ module.exports = function (app, router) {
     });
 
     router.get("/all/:user", function (req, res) {
-        mysql.user.getUserByLogin(req.params.user, function (err, rows) {
-            if (err) {
-                res.json({ error: "Can't get user skins" });
-                return;
-            }
-            if (rows.length > 0) {
-                mysql.skin.getUserSkins(rows[0].id_u, function (err, rows) {
+        async.waterfall([
+            function(callback) {
+                mysql.user.getUserByLogin(req.params.user, function (err, rows) {
                     if (err) {
                         res.json({ error: "Can't get user skins" });
-                        return;
-                    }
-                    res.json(rows);
-                });
-            } else {
-                res.json({ error: "User doesn't exist" });
-            }
-        });
-    });
-
-    router.post("/buy/:id", function (req, res) {
-        if (!req.connected) {
-            res.status(401).json({
-                error: "You must be logged in"
-            });
-            return;
-        }
-
-        mysql.skin.getSkin(req.params.id, function (err, rows) {
-            if (err) {
-                res.json({ error: "Can't get skin" });
-                return;
-            }
-            if (rows.length > 0) {
-                var skin = rows[0];
-
-                mysql.user.getUserById(req.connected.id, function (err, rows) {
-                    if (err) {
-                        res.json({ error: "Error getting user" });
+                        callback(err);
                         return;
                     }
                     if (rows.length > 0) {
-
-                        var user = rows[0];
-
-                        if (user.gems >= skin.price) {
-                            user.gems -= skin.price;
-                        } else {
-                            res.json({ error: "Not enough gems" });
-                            return;
-                        }
-                        mysql.skin.getUserSkin(user.id_u, skin.id_s, function (err, rows) {
-                            if (err) {
-                                res.json({ error: "Server problem" });
-                                return;
-                            }
-                            if (rows.length > 0) {
-                                res.json({ error: "Already owned" });
-                                return;
-                            }
-
-                            mysql.skin.addUserSkin(user.id_u, skin.id_s, function (err, rows) {
-                                if (!err) {
-                                    mysql.user.updateUser({ gems: user.gems }, user.id_u);
-                                    res.json({ msg: "Skin bought" });
-                                } else {
-                                    res.json({ error: "Error buying skin" });
-                                }
-                            });
-                            
-                        });
-                    } else {
+                        callback(null, rows[0]);
+                    }else{
                         res.json({ error: "User doesn't exist" });
+                        callback(true);
                     }
                 });
-
-            } else {
-                res.json({ error: "Skin doesn't exist" });
+            },
+            function(row, callback){
+                mysql.skin.getUserSkins(row.id_u, function (err, rows) {
+                    if (err) {
+                        res.json({ error: "Can't get user skins" });
+                        callback(err);
+                        return;
+                    }
+                    res.json(rows);
+                    callback(null);
+                });
             }
+            ]);
+});
+
+router.post("/buy/:id", function (req, res) {
+    if (!req.connected) {
+        res.status(401).json({
+            error: "You must be logged in"
         });
-    });
+        return;
+    }
 
-    router.post("/drop", function (req, res) {
-        if (!req.connected) {
-            res.status(401).json({
-                error: "You must be logged in"
+    async.waterfall([
+        function(callback){
+            //get skin
+            mysql.skin.getSkin(req.params.id, function (err, rows) {
+                if (err) {
+                    res.json({ error: "Can't get skin" });
+                    callback(err);
+                    return;
+                }
+                if (rows.length > 0) {
+                    var skin = rows[0];
+                    callback(null, skin);
+                }else{
+                    res.json({ error: "Skin doesn't exist" });
+                    callback(true);
+                }
             });
-            return;
-        }
-
-        var price = 100;
-
-        var weights = {
-            0: 745,
-            1: 200,
-            2: 50,
-            3: 5
-        };
-
-        mysql.user.getUserById(req.connected.id, function (err, rows) {
-            if (err) {
-                res.json({ error: "Error getting user" });
-                return;
-            }
-            if (rows.length > 0) {
-
-                var user = rows[0];
-
-                if (user.golds >= price) {
-                    user.golds -= price;
-                } else {
-                    res.json({ error: "Not enough golds" });
+        },
+        function(skin, callback){
+            //get user
+            mysql.user.getUserById(req.connected.id, function (err, rows) {
+                if (err) {
+                    res.json({ error: "Error getting user" });
+                    callback(err);
                     return;
                 }
 
-                mysql.skin.getNonUserSkins(user.id_u, function (err, rows) {
-                    if (err) {
-                        res.json({ error: "Problem getting skins" });
+                if (rows.length > 0) {
+                    var user = rows[0];
+
+                    if (user.gems >= skin.price) {
+                        user.gems -= skin.price;
+                    } else {
+                        res.json({ error: "Not enough gems" });
+                        callback(true);
                         return;
                     }
 
-                    var skins = rows;
+                    callback(null, user, skin);
 
-                    if (skins.length == 0) {
-                        res.json({ error: "You have all skins" });
-                        return;
-                    }
+                }else{
+                 res.json({ error: "User doesn't exist" });
+                 callback(true);
+             }
 
-                    var SkinsByRarity = {};
+         });
+        },
+        function(user, skin, callback){
+            //Get User skin
+            mysql.skin.getUserSkin(user.id_u, skin.id_s, function (err, rows) {
+                if (err) {
+                    res.json({ error: "Server problem" });
+                    callback(err);
+                    return;
+                }
+                if (rows.length > 0) {
+                    res.json({ error: "Already owned" });
+                    callback(true);
+                    return;
+                }
 
-                    for (var i in skins) {
-                        if (!SkinsByRarity[skins[i].rarity]) {
-                            SkinsByRarity[skins[i].rarity] = [];
-                        }
-                        SkinsByRarity[skins[i].rarity].push(skins[i]);
-                    }
-
-                    var computedWeights = {};
-                    var sum = 0;
-                    for (var i in weights) {
-                        if (SkinsByRarity[i] && SkinsByRarity[i].length > 0) {
-                            sum += weights[i];
-                            computedWeights[i] = sum;
-                        }
-                    }
-
-                    var random = Math.floor(Math.random() * sum + 1);
-                    var rarity = 0;
-                    for (var i in computedWeights) {
-                        if (computedWeights[i] >= random) {
-                            rarity = i;
-                            break;
-                        }
-                    }
-
-                    var skin = SkinsByRarity[rarity][Math.floor(Math.random() * SkinsByRarity[rarity].length)];
-
-
-                    mysql.skin.addUserSkin(user.id_u, skin.id_s, function (err, rows) {
-                        if (!err) {
-                            mysql.user.updateUser({ golds: user.golds }, user.id_u);
-                            res.json(skin);
-                        } else {
-                            res.json({ error: "Error adding skin" });
-                        }
-                    });
-                });
-            } else {
-                res.json({ error: "User doesn't exist" });
-            }
-        });
-    });
-
-
-    router.get("/generate", function (req, res) {
-        var rarity = {
-            0: 50,
-            1: 30,
-            2: 30,
-            3: 30
-        };
-
-        for (var i in rarity) {
-            for (var j = 0; j < rarity[i]; j++) {
-                mysql.skin.addSkin({ title: (i + "-" + j), rarity: i, price: 100 });
-            }
+                callback(null, user, skin);
+            });
+        },
+        function(user, skin, callback){
+            //Add User skin
+            mysql.skin.addUserSkin(user.id_u, skin.id_s, function (err, rows) {
+                if (!err) {
+                    mysql.user.updateUser({ gems: user.gems }, user.id_u);
+                    res.json({ msg: "Skin bought" });
+                    callback(null, true);
+                } else {
+                    res.json({ error: "Error buying skin" });
+                    callback(err);
+                }
+            });
         }
-        res.json({ lol: 'lol' });
+        ]);
+});
+
+router.post("/drop", function (req, res) {
+    if (!req.connected) {
+        res.status(401).json({
+            error: "You must be logged in"
+        });
+        return;
+    }
+
+    var price = 100;
+
+    var weights = {
+        0: 745,
+        1: 200,
+        2: 50,
+        3: 5
+    };
+
+    async.waterfall([
+        function(callback){
+            mysql.user.getUserById(req.connected.id, function (err, rows) {
+                if (err) {
+                    res.json({ error: "Error getting user" });
+                    callback(err);
+                    return;
+                }
+
+                if (rows.length > 0) {
+
+                    var user = rows[0];
+
+                    if (user.golds >= price) {
+                        user.golds -= price;
+                    } else {
+                        res.json({ error: "Not enough golds" });
+                        callback(true);
+                        return;
+                    }
+
+                    callback(null, user);
+
+                }else{
+                    res.json({ error: "User doesn't exist" });
+                    callback(true);
+                }
+
+            });
+        },
+        function(user, callback){
+            mysql.skin.getNonUserSkins(user.id_u, function (err, rows) {
+                if (err) {
+                    res.json({ error: "Problem getting skins" });
+                    callback(err);
+                    return;
+                }
+
+                var skins = rows;
+
+                if (skins.length == 0) {
+                    res.json({ error: "You have all skins" });
+                    return;
+                }
+
+                var SkinsByRarity = {};
+
+                for (var i in skins) {
+                    if (!SkinsByRarity[skins[i].rarity]) {
+                        SkinsByRarity[skins[i].rarity] = [];
+                    }
+                    SkinsByRarity[skins[i].rarity].push(skins[i]);
+                }
+
+                var computedWeights = {};
+                var sum = 0;
+                for (var i in weights) {
+                    if (SkinsByRarity[i] && SkinsByRarity[i].length > 0) {
+                        sum += weights[i];
+                        computedWeights[i] = sum;
+                    }
+                }
+
+                var random = Math.floor(Math.random() * sum + 1);
+                var rarity = 0;
+                for (var i in computedWeights) {
+                    if (computedWeights[i] >= random) {
+                        rarity = i;
+                        break;
+                    }
+                }
+
+                var skin = SkinsByRarity[rarity][Math.floor(Math.random() * SkinsByRarity[rarity].length)];
+                callback(null, user, skin);
+            });
+},
+function(user, skin, callback){
+    mysql.skin.addUserSkin(user.id_u, skin.id_s, function (err, rows) {
+        if (!err) {
+            mysql.user.updateUser({ golds: user.golds }, user.id_u);
+            res.json(skin);
+            callback(null, true);
+        } else {
+            res.json({ error: "Error adding skin" });
+            callback(err);
+        }
     });
+}
+]);
+});
+
+
+router.get("/generate", function (req, res) {
+    var rarity = {
+        0: 50,
+        1: 30,
+        2: 30,
+        3: 30
+    };
+
+    for (var i in rarity) {
+        for (var j = 0; j < rarity[i]; j++) {
+            mysql.skin.addSkin({ title: (i + "-" + j), rarity: i, price: 100 });
+        }
+    }
+    res.json({ lol: 'lol' });
+});
 
 }
