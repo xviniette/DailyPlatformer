@@ -32,9 +32,6 @@ Objet.prototype.physic = function () {
     var tilesize = this.room.map.tilesize;
     var tiles = this.room.map.tiles;
     this.rx += this.dx;
-    this.dx *= this.friction.x;
-    this.dx = parseFloat(this.dx.toFixed(4));
-    
 
     this.onGround = false;
     this.dy += this.gravity * delta;
