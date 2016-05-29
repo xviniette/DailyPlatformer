@@ -15,10 +15,7 @@ var Player = function (json) {
     this.rx = 0;
     this.ry = 0;
 
-    this.xspeed = 0;
-    this.yspeed = 0;
     this.xmaxspeed = 12 * this.delta;
-    this.ymaxspeed = 20 * this.delta;
 
     this.groundAcceleration = 3 * this.delta;
     this.airAcceleration = 1.5 * this.delta;
@@ -26,23 +23,17 @@ var Player = function (json) {
     this.groundFriction = 2 * this.delta;
     this.airFriction = 1 * this.delta;
     this.frictionThreshold = 3 * this.delta;
-
-
+    
+    this.gravity = 0.8 * this.delta;
+    this.maxgravity = 20 * this.delta;
+    
+    this.jump = 25 * this.delta;
+    
     this.dx = 0;
     this.dy = 0;
 
-
-
-    this.acceleration = 1;
     this.radius = 10;
     this.rapport = this.radius / 20;
-
-    this.gravity = 1.1;
-    this.friction = { x: 0, y: 0 };
-    this.bounce = { x: 0, y: 0 };
-
-    this.speed = 8;
-    this.jump = 37;
 
     this.onGround = false;
 
@@ -75,9 +66,6 @@ Player.prototype.reset = function () {
 
 Player.prototype.update = function (inp) {
     var delta = 0.016;
-
-    this.friction = { x: 0.3, y: 0.9 };
-    this.bounce = { x: 0, y: 0 };
 
     var inputs = [];
     for (var i in inp) {
@@ -120,14 +108,18 @@ Player.prototype.update = function (inp) {
     }
 
 
-
-
-
     if (inp.u) {
         if (this.onGround) {
-            this.dy = -this.jump * delta;
+            this.dy = -this.jump;
         }
     }
+    
+    if(this.dy < 0){
+        if(!inp.u){
+            this.dy = 0;
+        }
+    }
+    
     this.lastInput = inp;
     this.physic();
 }

@@ -34,20 +34,21 @@ Objet.prototype.physic = function () {
     this.rx += this.dx;
 
     this.onGround = false;
-    this.dy += this.gravity * delta;
+    this.dy += this.gravity
+    if(this.dy > this.maxgravity){
+        this.dy = this.maxgravity;
+    }
+    
     this.ry += this.dy;
-    this.dy *= this.friction.y;
     this.dy = parseFloat(this.dy.toFixed(4));
     
     
 
     if (!(this.hasWallCollision(this.cx, this.cy) && this.cx > 0 && this.cx < tiles.length - 1)) {
         if (this.hasWallCollision(this.cx - 1, this.cy) && this.rx < this.rapport && this.dx < 0) {
-            this.dx *= this.bounce.x * -1;
             this.rx = this.rapport;
         }
         if (this.hasWallCollision(this.cx + 1, this.cy) && this.rx > 1 - this.rapport && this.dx > 0) {
-            this.dx *= this.bounce.x * -1;
             this.rx = 1 - this.rapport;
         }
     }
