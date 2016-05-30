@@ -9,15 +9,20 @@
 	<canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
 
 	<div id="physics">
-		<br/>XMAXSPEED <input type="range" v-model="xmaxspeed" max="200" min="0"> {{xmaxspeed}}
-		<br/>Ground Accel <input type="range" v-model="groundAcceleration" max="200" min="0"> {{groundAcceleration}}
-		<br/>Air Accel <input type="range" v-model="airAcceleration" max="200" min="0"> {{airAcceleration}}
-		<br/>Ground Friction <input type="range" v-model="groundFriction" max="200" min="0"> {{groundFriction}}
-		<br/>Air Friction <input type="range" v-model="airFriction" max="200" min="0"> {{airFriction}}
-		<br/>Friction Threshold <input type="range" v-model="frictionThreshold" max="200" min="0"> {{frictionThreshold}}
-		<br/>Gravity <input type="range" v-model="gravity" max="200" min="0"> {{gravity}}
-		<br/>Max Gravity <input type="range" v-model="maxgravity" max="200" min="0"> {{maxgravity}}
-		<br/>Jump <input type="range" v-model="jump" max="1000" min="0"> {{jump}}
+		<br/>xmaxspeed <input type="range" v-model="xmaxspeed" max="200" min="0"> <input type="number" v-model="xmaxspeed">
+		<br/>groundAcceleration <input type="range" v-model="groundAcceleration" max="200" min="0"> <input type="number" v-model="groundAcceleration">
+		<br/>airAcceleration <input type="range" v-model="airAcceleration" max="200" min="0"> <input type="number" v-model="airAcceleration">
+		<br/>groundFriction <input type="range" v-model="groundFriction" max="200" min="0"> <input type="number" v-model="groundFriction">
+		<br/>airFriction <input type="range" v-model="airFriction" max="200" min="0"> <input type="number" v-model="airFriction">
+		<br/>frictionThreshold <input type="range" v-model="frictionThreshold" max="200" min="0"> <input type="number" v-model="frictionThreshold">
+		<br/>normalGravity <input type="range" v-model="normalGravity" max="200" min="0"> <input type="number" v-model="normalGravity">
+		<br/>normalMaxGravity <input type="range" v-model="normalMaxGravity" max="200" min="0"> <input type="number" v-model="normalMaxGravity">
+		<br/>wallGravity <input type="range" v-model="wallGravity" max="1000" min="0"> <input type="number" v-model="wallGravity">
+		<br/>wallMaxGravity <input type="range" v-model="wallMaxGravity" max="1000" min="0"> <input type="number" v-model="wallMaxGravity">
+		<br/>Jump <input type="range" v-model="jump" max="1000" min="0"> <input type="number" v-model="jump">
+		<br/>wallJump <input type="range" v-model="wallJump" max="1000" min="0"> <input type="number" v-model="wallJump">
+		<br/>wallExpulsion <input type="range" v-model="wallExpulsion" max="1000" min="0"> <input type="number" v-model="wallExpulsion">
+		<br/>wallStick <input type="range" v-model="wallStick" max="1000" min="0"> <input type="number" v-model="wallStick">
 	</div>
 
 

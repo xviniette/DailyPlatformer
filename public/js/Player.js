@@ -21,12 +21,26 @@ var Player = function (json) {
     this.groundFriction = 2;
     this.airFriction = 1;
     this.frictionThreshold = 3;
+
+    this.normalGravity = 5;
+    this.normalMaxGravity = 15;
+
+    this.wallGravity = 5;
+    this.wallMaxGravity = 15;
     
-    this.gravity = 0.8;
-    this.maxgravity = 20;
-    
+    this.gravity = 0;
+    this.maxgravity = 0;
+
     this.jump = 25;
-    
+    this.wallJump = 15;
+
+    this.wallExpulsion = 20;
+
+    this.wallStick = 5;
+
+    this.hisWalling = 0;
+    this.wallTimer = 0;
+
     this.dx = 0;
     this.dy = 0;
 
@@ -72,6 +86,10 @@ Player.prototype.update = function (inp) {
     }
     this.allInputs.push(inputs.join(","));
 
+
+    this.gravity = this.normalGravity;
+    this.maxgravity = this.normalMaxGravity;
+
     if ((!inp.r && !inp.l) || (inp.r && inp.l)) {
         if(Math.abs(this.dx) < this.frictionThreshold / tilesize * delta){
             this.dx = 0;
@@ -108,9 +126,19 @@ Player.prototype.update = function (inp) {
 
 
     if (inp.u) {
-        if (this.onGround) {
+        if (this.onGround && !this.lastInput.u) {
             this.dy = -this.jump / tilesize * delta;
+        }else{
+            if(this.hisWalling != 0 && !this.lastInput.u && !this.onGround){
+                this.dy -= this.wallJump / tilesize * delta;
+                this.dx += this.wallExpulsion / tilesize * delta * -this.hisWalling;
+            }
         }
+    }
+
+    if(this.hisWalling){
+        this.gravity = this.wallGravity;
+        this.maxgravity = this.wallMaxGravity;
     }
     
     if(this.dy < 0){

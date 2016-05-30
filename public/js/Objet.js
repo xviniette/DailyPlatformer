@@ -35,6 +35,8 @@ Objet.prototype.physic = function () {
     this.rx += this.dx;
 
     this.onGround = false;
+    this.hisWalling = 0;
+
     this.dy += this.gravity / tilesize * delta;
     if(this.dy > this.maxgravity / tilesize * delta){
         this.dy = this.maxgravity / tilesize * delta;
@@ -48,9 +50,11 @@ Objet.prototype.physic = function () {
     if (!(this.hasWallCollision(this.cx, this.cy) && this.cx > 0 && this.cx < tiles.length - 1)) {
         if (this.hasWallCollision(this.cx - 1, this.cy) && this.rx < this.rapport && this.dx < 0) {
             this.rx = this.rapport;
+            this.hisWalling = -1;
         }
         if (this.hasWallCollision(this.cx + 1, this.cy) && this.rx > 1 - this.rapport && this.dx > 0) {
             this.rx = 1 - this.rapport;
+            this.hisWalling = 1;
         }
     }
 
