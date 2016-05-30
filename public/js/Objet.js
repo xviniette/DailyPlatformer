@@ -28,15 +28,16 @@ Objet.prototype.setCoordinate = function (x, y) {
 }
 
 Objet.prototype.physic = function () {
-    var delta = this.room.delta;
+    var delta = 0.016;
     var tilesize = this.room.map.tilesize;
+
     var tiles = this.room.map.tiles;
     this.rx += this.dx;
 
     this.onGround = false;
-    this.dy += this.gravity
-    if(this.dy > this.maxgravity){
-        this.dy = this.maxgravity;
+    this.dy += this.gravity / tilesize * delta;
+    if(this.dy > this.maxgravity / tilesize * delta){
+        this.dy = this.maxgravity / tilesize * delta;
     }
     
     this.ry += this.dy;

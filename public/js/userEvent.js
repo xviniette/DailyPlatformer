@@ -65,4 +65,9 @@ $(function(){
 			}
 		}
 	});
+
+	vues.physic = new Vue({
+		el: '#physics',
+		data:client.player
+	});
 });

@@ -8,6 +8,18 @@
 
 	<canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
 
+	<div id="physics">
+		<br/>XMAXSPEED <input type="range" v-model="xmaxspeed" max="200" min="0"> {{xmaxspeed}}
+		<br/>Ground Accel <input type="range" v-model="groundAcceleration" max="200" min="0"> {{groundAcceleration}}
+		<br/>Air Accel <input type="range" v-model="airAcceleration" max="200" min="0"> {{airAcceleration}}
+		<br/>Ground Friction <input type="range" v-model="groundFriction" max="200" min="0"> {{groundFriction}}
+		<br/>Air Friction <input type="range" v-model="airFriction" max="200" min="0"> {{airFriction}}
+		<br/>Friction Threshold <input type="range" v-model="frictionThreshold" max="200" min="0"> {{frictionThreshold}}
+		<br/>Gravity <input type="range" v-model="gravity" max="200" min="0"> {{gravity}}
+		<br/>Max Gravity <input type="range" v-model="maxgravity" max="200" min="0"> {{maxgravity}}
+		<br/>Jump <input type="range" v-model="jump" max="1000" min="0"> {{jump}}
+	</div>
+
 
 	<form id="login_form" v-on:submit.prevent="submit">
 		<input type="text" v-model="login">
