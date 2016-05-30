@@ -13,28 +13,30 @@ var Player = function (json) {
     this.rx = 0;
     this.ry = 0;
 
-    this.xmaxspeed = 12;
+    this.xmaxspeed = 350;
 
-    this.groundAcceleration = 3;
-    this.airAcceleration = 1.5;
+    this.groundAcceleration = 50;
+    this.airAcceleration = 50;
 
-    this.groundFriction = 2;
-    this.airFriction = 1;
-    this.frictionThreshold = 3;
+    this.groundFriction = 100;
+    this.airFriction = 50;
+    
+    this.groundFrictionThreshold = 100;
+    this.airFrictionThreshold = 50;
 
-    this.normalGravity = 5;
-    this.normalMaxGravity = 15;
+    this.normalGravity = 15;
+    this.normalMaxGravity = 350;
 
     this.wallGravity = 5;
-    this.wallMaxGravity = 15;
+    this.wallMaxGravity = 150;
     
     this.gravity = 0;
     this.maxgravity = 0;
 
-    this.jump = 25;
-    this.wallJump = 15;
+    this.jump = 450;
+    this.wallJump = 450;
 
-    this.wallExpulsion = 20;
+    this.wallExpulsion = 400;
 
     this.wallStick = 5;
 
@@ -89,9 +91,15 @@ Player.prototype.update = function (inp) {
 
     this.gravity = this.normalGravity;
     this.maxgravity = this.normalMaxGravity;
+    
+    var frictionThreshold = this.groundFrictionThreshold;
+    
+    if(!this.onGround){
+        frictionThreshold = this.airFrictionThreshold;
+    }
 
     if ((!inp.r && !inp.l) || (inp.r && inp.l)) {
-        if(Math.abs(this.dx) < this.frictionThreshold / tilesize * delta){
+        if(Math.abs(this.dx) < frictionThreshold / tilesize * delta){
             this.dx = 0;
         }else{
             if(Math.abs(this.dx) > 0){
@@ -130,13 +138,13 @@ Player.prototype.update = function (inp) {
             this.dy = -this.jump / tilesize * delta;
         }else{
             if(this.hisWalling != 0 && !this.lastInput.u && !this.onGround){
-                this.dy -= this.wallJump / tilesize * delta;
-                this.dx += this.wallExpulsion / tilesize * delta * -this.hisWalling;
+                this.dy = -this.wallJump / tilesize * delta;
+                this.dx = this.wallExpulsion / tilesize * delta * -this.hisWalling;
             }
         }
     }
 
-    if(this.hisWalling){
+    if(this.hisWalling && this.dy > 0){
         this.gravity = this.wallGravity;
         this.maxgravity = this.wallMaxGravity;
     }
