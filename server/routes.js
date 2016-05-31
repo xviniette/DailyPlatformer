@@ -2,17 +2,27 @@ var fs = require("fs");
 var jwt = require('jsonwebtoken');
 
 module.exports = function(app){
+    var mysql = app.get("MysqlManager");
 
     app.use(function(req, res, next){
         var token = req.body.token || req.query.token || req.headers['authorization'];
         if(token){
             jwt.verify(token, app.get('config').jwtKey, function(err, decoded) { 
                 if(!err){
-                    req.connected = decoded;
-                    req.connected.token = token;
-                    next();
+                    mysql.user.getUserByToken(token, function(err, rows){
+                        if(err || rows.length == 0){
+                            res.status(401).json({error:"Authentication token error."});
+                        }else{
+                            req.connected = decoded;
+                            req.connected.token = token;
+                            req.connected.user = rows[0];
+                            console.log(req.connected);
+                            next();
+                        }
+                    });
+                    
                 }else{
-                    res.status(401).json({msg:"Authentication token error."});
+                    res.status(401).json({error:"Authentication token error."});
                 }   
             });
         }else{

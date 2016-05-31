@@ -154,7 +154,15 @@ router.post("/drop", function (req, res) {
         return;
     }
 
-    var price = 100;
+    var type = "golds";
+    if(req.body.gems){
+        type = "gems";
+    }
+
+    var price = {
+        golds:100,
+        gems:10
+    }
 
     var weights = {
         0: 745,
@@ -176,8 +184,8 @@ router.post("/drop", function (req, res) {
 
                     var user = rows[0];
 
-                    if (user.golds >= price) {
-                        user.golds -= price;
+                    if (user[type] >= price[type]) {
+                        user[type] -= price[type];
                     } else {
                         res.json({ error: "Not enough golds" });
                         callback(true);
@@ -242,7 +250,9 @@ router.post("/drop", function (req, res) {
 function(user, skin, callback){
     mysql.skin.addUserSkin(user.id_u, skin.id_s, function (err, rows) {
         if (!err) {
-            mysql.user.updateUser({ golds: user.golds }, user.id_u);
+            var data = {};
+            data[type] = user[type];
+            mysql.user.updateUser(data, user.id_u);
             res.json(skin);
             callback(null, true);
         } else {
