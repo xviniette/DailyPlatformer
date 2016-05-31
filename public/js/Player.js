@@ -131,8 +131,7 @@ Player.prototype.update = function (inp) {
             }
         }
     }
-
-
+        
     if (inp.u) {
         if (this.onGround && !this.lastInput.u) {
             this.dy = -this.jump / tilesize * delta;
@@ -143,7 +142,7 @@ Player.prototype.update = function (inp) {
             }
         }
     }
-
+    
     if(this.hisWalling && this.dy > 0){
         this.gravity = this.wallGravity;
         this.maxgravity = this.wallMaxGravity;
