@@ -8,7 +8,7 @@ module.exports = {
     },
     glicko:{
         rating:1500,
-        rd:300,
+        rd:350,
         tau:0.5,
         vol:0.06
     }

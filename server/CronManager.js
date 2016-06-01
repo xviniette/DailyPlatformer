@@ -25,15 +25,22 @@ module.exports = function (app) {
 
                         var p = ranking.makePlayer(rows[i].elo, rows[i].sigma, app.get("config").glicko.vol);
                         rows[i].glicko = p;
-                        racers.push(p);
+                        racers.push([p]);
+
+                        console.log(rows[i].login, rows[i].elo, rows[i].sigma, "=>", rows[i].time);
+
                     }
 
-                    var race = glicko.makeRace(racers);
+                    console.log("----------");
+
+                    var race = ranking.makeRace(racers);
                     ranking.updateRatings(race);
 
                     for(var i in rows){
-                        rows[i].elo = rows[i].glicko.getRating();
-                        rows[i].sigma = rows[i].glicko.getRd();
+                        rows[i].elo = Math.round(rows[i].glicko.getRating());
+                        rows[i].sigma = Math.round(rows[i].glicko.getRd());
+
+                        console.log(rows[i].login, rows[i].elo, rows[i].sigma, "=>", rows[i].time);
 
 
                         mysql.user.updateUser({
@@ -47,6 +54,7 @@ module.exports = function (app) {
             }
         });
 }
+
 
 var job = new CronJob({
     cronTime: '00 00 00,12 * * *',
