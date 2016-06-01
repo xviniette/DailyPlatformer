@@ -35,32 +35,50 @@ Objet.prototype.physic = function () {
     this.rx += this.dx;
 
     this.onGround = false;
+    
+    var walling = this.hisWalling ;
+    
     this.hisWalling = 0;
 
     this.dy += this.gravity / tilesize * delta;
-    if(this.dy > this.maxgravity / tilesize * delta){
+    if (this.dy > this.maxgravity / tilesize * delta) {
         this.dy = this.maxgravity / tilesize * delta;
     }
-    
+
     this.ry += this.dy;
     this.dy = parseFloat(this.dy.toFixed(4));
     
+    this.newWallContact = false;
     
 
     if (!(this.hasWallCollision(this.cx, this.cy) && this.cx > 0 && this.cx < tiles.length - 1)) {
-        if (this.hasWallCollision(this.cx - 1, this.cy) && this.rx < this.rapport && this.dx < 0) {
-            this.rx = this.rapport;
-            this.hisWalling = -1;
+        if (this.hasWallCollision(this.cx - 1, this.cy) && this.rx <= this.rapport) {
+            if (walling != -1) {
+                this.newWallContact = true;
+            }
+            if (this.dx < 0) {
+                this.rx = this.rapport;
+            }
+            if(!this.onGround){
+                this.hisWalling = -1;
+            }
         }
-        if (this.hasWallCollision(this.cx + 1, this.cy) && this.rx > 1 - this.rapport && this.dx > 0) {
-            this.rx = 1 - this.rapport;
-            this.hisWalling = 1;
+        if (this.hasWallCollision(this.cx + 1, this.cy) && this.rx >= 1 - this.rapport) {
+            if (walling != 1) {
+                this.newWallContact = true;
+            }
+            if (this.dx > 0) {
+                this.rx = 1 - this.rapport;
+            }
+            if(!this.onGround){
+                this.hisWalling = 1;
+            }
         }
     }
 
     while (this.rx < 0) { this.rx++; this.cx--; }
     while (this.rx > 1) { this.rx--; this.cx++; }
-    
+
 
     var gap = 1;
 
@@ -68,7 +86,7 @@ Objet.prototype.physic = function () {
         (this.hasWallCollision(this.cx, this.cy - 1)
             || (this.hasWallCollision(this.cx + 1, this.cy - 1) && this.rx > 1 - this.rapport * gap)
             || (this.hasWallCollision(this.cx - 1, this.cy - 1) && this.rx < this.rapport * gap))
-        ) {
+    ) {
         this.dy = 0;
         this.ry = this.rapport;
     }
@@ -76,7 +94,7 @@ Objet.prototype.physic = function () {
         ((this.hasWallCollision(this.cx, this.cy + 1))
             || (this.hasWallCollision(this.cx + 1, this.cy + 1) && this.rx > 1 - this.rapport * gap)
             || (this.hasWallCollision(this.cx - 1, this.cy + 1) && this.rx < this.rapport * gap)
-            )) {
+        )) {
         this.onGround = true;
         this.dy = 0;
         this.ry = 1 - this.rapport;
@@ -89,7 +107,7 @@ Objet.prototype.physic = function () {
     //On met les bonnes valeurs pour ry/cy
     while (this.ry < 0) { this.ry++; this.cy--; }
     while (this.ry > 1) { this.ry--; this.cy++; }
-    
+
 
     //On arrondi
     this.rx = parseFloat(this.rx.toFixed(3));

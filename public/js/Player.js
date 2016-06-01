@@ -5,7 +5,7 @@ var Player = function (json) {
     this.pseudo = null;
 
     this.delta = 0.016;
-    
+
     this.x = 0;
     this.y = 0;
     this.cx = 0;
@@ -20,7 +20,7 @@ var Player = function (json) {
 
     this.groundFriction = 100;
     this.airFriction = 50;
-    
+
     this.groundFrictionThreshold = 100;
     this.airFrictionThreshold = 50;
 
@@ -29,7 +29,7 @@ var Player = function (json) {
 
     this.wallGravity = 5;
     this.wallMaxGravity = 150;
-    
+
     this.gravity = 0;
     this.maxgravity = 0;
 
@@ -38,10 +38,11 @@ var Player = function (json) {
 
     this.wallExpulsion = 400;
 
-    this.wallStick = 5;
+    this.wallStick = 15;
 
     this.hisWalling = 0;
     this.wallTimer = 0;
+    this.newWallContact = false;
 
     this.dx = 0;
     this.dy = 0;
@@ -91,38 +92,40 @@ Player.prototype.update = function (inp) {
 
     this.gravity = this.normalGravity;
     this.maxgravity = this.normalMaxGravity;
-    
+
     var frictionThreshold = this.groundFrictionThreshold;
-    
-    if(!this.onGround){
+
+    if (!this.onGround) {
         frictionThreshold = this.airFrictionThreshold;
+    } else {
+        this.wallTimer = 0;
     }
 
     if ((!inp.r && !inp.l) || (inp.r && inp.l)) {
-        if(Math.abs(this.dx) < frictionThreshold / tilesize * delta){
+        if (Math.abs(this.dx) < frictionThreshold / tilesize * delta) {
             this.dx = 0;
-        }else{
-            if(Math.abs(this.dx) > 0){
+        } else {
+            if (Math.abs(this.dx) > 0) {
                 var sign = -1;
-                if(this.dx < 0){
+                if (this.dx < 0) {
                     sign = 1;
                 }
-                if(this.onGround){
+                if (this.onGround) {
                     this.dx += this.groundFriction * sign / tilesize * delta;
-                }else{
+                } else {
                     this.dx += this.airFriction * sign / tilesize * delta;
                 }
             }
         }
     } else {
-        if (inp.r && this.dx < this.xmaxspeed / tilesize * delta) {
+        if (inp.r && this.dx < this.xmaxspeed / tilesize * delta && this.wallTimer == 0) {
             this.direction = 1;
             if (this.onGround) {
                 this.dx += this.groundAcceleration / tilesize * delta;
             } else {
                 this.dx += this.airAcceleration / tilesize * delta;
             }
-        } else if (inp.l && this.dx > -this.xmaxspeed / tilesize * delta) {
+        } else if (inp.l && this.dx > -this.xmaxspeed / tilesize * delta && this.wallTimer == 0) {
             this.direction = -1;
             if (this.onGround) {
                 this.dx -= this.groundAcceleration / tilesize * delta;
@@ -131,29 +134,41 @@ Player.prototype.update = function (inp) {
             }
         }
     }
-        
+
     if (inp.u) {
         if (this.onGround && !this.lastInput.u) {
             this.dy = -this.jump / tilesize * delta;
-        }else{
-            if(this.hisWalling != 0 && !this.lastInput.u && !this.onGround){
+        } else {
+            if (this.hisWalling != 0 && !this.lastInput.u && !this.onGround) {
                 this.dy = -this.wallJump / tilesize * delta;
                 this.dx = this.wallExpulsion / tilesize * delta * -this.hisWalling;
+                this.wallTimer = 0;
             }
         }
     }
-    
-    if(this.hisWalling && this.dy > 0){
+
+    if (this.hisWalling && this.dy > 0) {
         this.gravity = this.wallGravity;
         this.maxgravity = this.wallMaxGravity;
+
+
+
     }
-    
-    if(this.dy < 0){
-        if(!inp.u){
+
+    if (this.wallTimer == 0 && this.newWallContact) {
+        this.wallTimer = this.wallStick;
+    }
+
+    if (this.wallTimer > 0) {
+        this.wallTimer--;
+    }
+
+    if (this.dy < 0) {
+        if (!inp.u) {
             this.dy = 0;
         }
     }
-    
+
     this.lastInput = inp;
     this.physic();
 }
