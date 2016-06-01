@@ -6,5 +6,10 @@ module.exports = {
         password : '',
         database : 'platformer'
     },
-    elo:1500
+    glicko:{
+        rating:1500,
+        rd:300,
+        tau:0.5,
+        vol:0.06
+    }
 }

@@ -23,8 +23,8 @@ module.exports = function (app, router) {
                             var userToSave = {
                                 login: req.body.login,
                                 password: req.body.password,
-                                elo:app.get("config").elo,
-                                sigma:Math.round(app.get("config").elo/3),
+                                elo:app.get("config").glicko.rating,
+                                sigma:app.get("config").glicko.rd,
                                 xp:0,
                                 golds:0,
                                 gems:0
