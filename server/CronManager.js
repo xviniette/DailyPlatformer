@@ -9,16 +9,9 @@ module.exports = function (app) {
         mysql.map.getCurrentMap(function (err, rows) {
             var ranking = new glicko2.Glicko2(app.get("config").glicko);
 
-
             if (err) {
                 return;
             }
-
-            var race = glicko.makeRace(
-                [
-                ]
-                );
-
 
             if (rows.length > 0) {
                 mysql.run.getAllRankedRuns(rows[0].id_m, function(err, rows){
