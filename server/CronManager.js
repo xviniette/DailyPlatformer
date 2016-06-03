@@ -42,9 +42,6 @@ module.exports = function (app) {
                         rows[i].elo = Math.round(rows[i].glicko.getRating());
                         rows[i].sigma = Math.round(rows[i].glicko.getRd());
 
-                        console.log(rows[i].login, rows[i].elo, rows[i].sigma, "=>", rows[i].time);
-
-
                         mysql.user.updateUser({
                             golds:rows[i].golds,
                             xp:rows[i].xp,
@@ -55,7 +52,6 @@ module.exports = function (app) {
                 });
 
                 var run = app.get("run");
-                console.log(run);
 
                 run.getMedailsRuns(rows[0].id_m, function(runs){
                     var medails = {
@@ -69,9 +65,6 @@ module.exports = function (app) {
                     for(var i in runs){
                         datas[medails[runs[i].medal]] = runs[i].time;
                     }
-
-                    console.log(datas);
-
                     mysql.map.updateMap(datas, rows[0].id_m);
                 });
 

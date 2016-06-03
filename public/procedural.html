@@ -1,66 +1,22 @@
 <canvas id="game" width="500" height="500">
 
 <script>
-var distance = function(x, y, x1, y1){
-    return Math.abs(x - x1) + Math.abs(y - y1);
+var tilesize = 5;
+
+var current = 
+
+var steps = {
+    right:[
+
+    ]
 }
 
-var Moves = {
-    init:{
-        move:[[2]],
-        suite:{
-            right:5,
-            left:5
-        }
-    },
-    right:{
-        move:[
-            [0, 0, 0],
-            [0, 1, 2],
-            [0, 0, 0]
-        ],
-        suite:{
-            right:8,
-            jumpright:4,
-            left:1
-        }
-    },
-    left:{
-        move:[
-            [0, 0, 0],
-            [2, 1, 0],
-            [0, 0, 0]
-        ],
-        suite:{
-            left:8,
-            jumpleft:4,
-            right:1
-        }
-    },
-    jumpright:{
-        move:[
-            [0, 1, 2],
-            [0, 1, 0],
-            [0, 0, 0]
-        ],
-        suite:{
-            right:5,
-            jumpleft:5,
-            jumpright:2
-        }
-    },
-    jumpleft:{
-        move:[
-            [2, 1, 0],
-            [0, 1, 0],
-            [0, 0, 0]
-        ],
-        suite:{
-            left:5,
-            jumpleft:2,
-            jumpright:5
-        }
-    }
+var Box = function(x, y, w, h){
+    this.minx = x;
+    this.maxx = x + w;
+
+    this.miny = y;
+    this.maxy = y + h;
 }
 
 var worldSize = {
@@ -77,8 +33,6 @@ var random = function(min, max){
 var display = function(){
     var canvas = document.querySelector("#game");
     var ctx = canvas.getContext("2d");
-
-    var tilesize = 10;
 
     for(var i in world){
         for(var j in world[i]){
