@@ -5,6 +5,8 @@ var glicko2 = require('glicko2');
 module.exports = function (app) {
     var mysql = app.get("MysqlManager");
 
+
+
     var endRankedCompute = function () {
         mysql.map.getCurrentMap(function (err, rows) {
             var ranking = new glicko2.Glicko2(app.get("config").glicko);
@@ -51,6 +53,28 @@ module.exports = function (app) {
                         }, rows[i].id_u);
                     }
                 });
+
+                var run = app.get("run");
+                console.log(run);
+
+                run.getMedailsRuns(rows[0].id_m, function(runs){
+                    var medails = {
+                        0:"master",
+                        1:"gold",
+                        2:"silver",
+                        3:"bronze"
+                    };
+
+                    var datas = {};
+                    for(var i in runs){
+                        datas[medails[runs[i].medal]] = runs[i].time;
+                    }
+
+                    console.log(datas);
+
+                    mysql.map.updateMap(datas, rows[0].id_m);
+                });
+
             }
         });
 }

@@ -107,11 +107,11 @@ router.post("/buy/:id", function (req, res) {
                     callback(null, user, skin);
 
                 }else{
-                 res.json({ error: "User doesn't exist" });
-                 callback(true);
-             }
+                   res.json({ error: "User doesn't exist" });
+                   callback(true);
+               }
 
-         });
+           });
         },
         function(user, skin, callback){
             //Get User skin
@@ -202,7 +202,7 @@ router.post("/drop", function (req, res) {
             });
         },
         function(user, callback){
-            mysql.skin.getNonUserSkins(user.id_u, function (err, rows) {
+            mysql.skin.getAllSkins(function (err, rows) {
                 if (err) {
                     res.json({ error: "Problem getting skins" });
                     callback(err);
@@ -212,7 +212,7 @@ router.post("/drop", function (req, res) {
                 var skins = rows;
 
                 if (skins.length == 0) {
-                    res.json({ error: "You have all skins" });
+                    res.json({ error: "No skins" });
                     return;
                 }
 
@@ -248,12 +248,28 @@ router.post("/drop", function (req, res) {
             });
 },
 function(user, skin, callback){
+    mysql.skin.getUserSkin(user.id_u, skin.id_s, function(err, rows){
+        if(err){
+            res.json({error:"Problem"});
+            return;
+        }
+
+        if(rows.length == 0){
+            callback(null, user, skin);
+        }else{
+            var goldsDuplicate = 200;
+            user.golds += goldsDuplicate;
+            mysql.user.updateUser({golds:user.golds}, user.id_u);
+            res.json({skin:skin, duplicate:true, golds:goldsDuplicate});
+            callback(true);
+        }
+    });
+},
+function(user, skin, callback){
     mysql.skin.addUserSkin(user.id_u, skin.id_s, function (err, rows) {
         if (!err) {
-            var data = {};
-            data[type] = user[type];
-            mysql.user.updateUser(data, user.id_u);
-            res.json(skin);
+            mysql.user.updateUser({golds:user.golds, gems:user.gems}, user.id_u);
+            res.json({skin:skin});
             callback(null, true);
         } else {
             res.json({ error: "Error adding skin" });

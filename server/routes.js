@@ -16,7 +16,6 @@ module.exports = function(app){
                             req.connected = decoded;
                             req.connected.token = token;
                             req.connected.user = rows[0];
-                            console.log(req.connected);
                             next();
                         }
                     });
@@ -39,7 +38,8 @@ module.exports = function(app){
             for(var i in files){
                 var router = express.Router();
                 app.use("/"+files[i].split(".")[0], router);
-                require(routeDir + files[i])(app, router);
+                var route = require(routeDir + files[i])(app, router);
+                app.set(files[i].split(".")[0], route);
             }
         }
 

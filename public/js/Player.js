@@ -38,7 +38,7 @@ var Player = function (json) {
 
     this.wallExpulsion = 400;
 
-    this.wallStick = 15;
+    this.wallStick = 10;
 
     this.hisWalling = 0;
     this.wallTimer = 0;

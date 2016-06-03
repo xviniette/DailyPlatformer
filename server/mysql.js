@@ -54,6 +54,12 @@ module.exports = function (app) {
             },
             getMap: function (id, callback) {
                 db.query("SELECT * FROM maps WHERE id_m = ?;", [id], callback);
+            },
+            addMap: function(datas, callback){
+                db.query("INSERT INTO maps SET ?", datas, callback);
+            },
+            updateMap: function(datas, map, callback){
+                db.query("UPDATE maps SET ? WHERE id_m = ?;", [datas, map], callback);
             }
         },
         run: {

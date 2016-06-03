@@ -446,4 +446,9 @@ var getRewards = function (rewards, newmedail, oldmedail) {
     }
     return toreward;
 }
+
+    return {
+        getMedailsRuns:getMedailsRuns,
+        getMedail:getMedail
+    }
 }
