@@ -44,6 +44,8 @@ var Player = function (json) {
     this.wallTimer = 0;
     this.newWallContact = false;
 
+    this.willJump = false;    
+
     this.dx = 0;
     this.dy = 0;
 
@@ -136,9 +138,13 @@ Player.prototype.update = function (inp) {
     }
 
     if (inp.u) {
-        if (this.onGround && !this.lastInput.u) {
+        if (this.onGround && (!this.lastInput.u || this.willJump)) {
+            this.willJump = false;
             this.dy = -this.jump / tilesize * delta;
         } else {
+            if(this.hasWallCollision(this.cx, this.cy + 1) && !this.lastInput.u){
+                this.willJump = true;
+            }
             if (this.hisWalling != 0 && !this.lastInput.u && !this.onGround) {
                 this.dy = -this.wallJump / tilesize * delta;
                 this.dx = this.wallExpulsion / tilesize * delta * -this.hisWalling;
