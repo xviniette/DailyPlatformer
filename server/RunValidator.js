@@ -23,7 +23,7 @@ module.exports.runIsValid = function (map, inputs) {
     player.setCoordinate(room.map.player.x, room.map.player.y);
     var positions = [];
 
-    var SAVE_FPS = 10;
+    var SAVE_FPS = 30;
     var saveInterval = FPS / SAVE_FPS;
     var incrementeInterval = 0;
     var total = 0;
