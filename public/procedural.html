@@ -1,7 +1,7 @@
-<canvas id="game" width="2000" height="1000" style="border:1px solid black;">
+<canvas id="game" width="15000" height="4000" style="border:1px solid black;">
 
 <script>
-var tilesize = 5;
+var tilesize = 10;
 
 var Box = function(x, y, w, h){
     this.x = x;
@@ -18,7 +18,7 @@ var rand = function(min, max){
 
 var right = function(box){
     var gap = rand(1,5);
-    var width = rand(1,5);
+    var width = rand(1,15);
     var height = rand(1,4);
 
     return new Box(box.x + box.w + gap, box.y, width, height);
@@ -27,7 +27,7 @@ var right = function(box){
 var upright = function(box){
     var gap = rand(0,3);
     var gapH = rand(1,6);
-    var width = rand(1,5);
+    var width = rand(1,15);
     var height = rand(1,4);
 
     return new Box(box.x + box.w + gap, box.y - gapH, width, height);
@@ -36,7 +36,7 @@ var upright = function(box){
 var upleft = function(box){
     var gap = rand(0,3);
     var gapH = rand(1,6);
-    var width = rand(1,5);
+    var width = rand(1,15);
     var height = rand(1,4);
 
     return new Box(box.x - gap - width, box.y - gapH, width, height);
@@ -44,8 +44,8 @@ var upleft = function(box){
 
 var drop = function(box){
     var gap = rand(-2,5);
-    var gapH = rand(1,6);
-    var width = rand(3,5);
+    var gapH = rand(1,10);
+    var width = rand(3,15);
     var height = rand(1,4);
 
     return new Box(box.x + box.w + gap, box.y + gapH, width, height);
@@ -80,8 +80,8 @@ function generate(){
         }
     }
 
-    for(var i = 0; i < 30; i++){
-        var dirArray = [directions.RIGHT, directions.RIGHT, directions.UPRIGHT, directions.UPLEFT, directions.DROP, directions.DROP];
+    for(var i = 0; i < 40; i++){
+        var dirArray = [directions.RIGHT, directions.UPRIGHT, directions.UPLEFT, directions.DROP, directions.DROP];
         var newDir = dirArray[rand(0, dirArray.length)];
         switch(newDir){
             case directions.RIGHT:
@@ -107,13 +107,8 @@ function generate(){
         }
         prevdir = newDir;
     }
+    repeat(1, right);
     return world;
-}
-
-
-var worldSize = {
-    x:50,
-    y:50
 }
 
 var world = [];
@@ -129,7 +124,7 @@ var display = function(world, tilesize){
 }
 
 var world = generate();
-display(world, 5);
+display(world, tilesize);
 
 
 </script>
