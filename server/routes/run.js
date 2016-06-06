@@ -71,18 +71,18 @@ module.exports = function (app, router) {
                                     if(rrewardsweigths[i] >= rrewardsweigthsRandom){
                                         switch (i) {
                                           case "golds":
-                                            var min = 50;
-                                            var max = 100;
-                                            var value = Math.floor(Math.random() * (max - min) + min);
-                                            user.golds += value;
-                                            rreward = {golds:value};
+                                          var min = 50;
+                                          var max = 100;
+                                          var value = Math.floor(Math.random() * (max - min) + min);
+                                          user.golds += value;
+                                          rreward = {golds:value};
                                           break;
                                           case "xp":
-                                            var min = 200;
-                                            var max = 300;
-                                            var value = Math.floor(Math.random() * (max - min) + min);
-                                            user.xp += value;
-                                            rreward = {xp:value};
+                                          var min = 200;
+                                          var max = 300;
+                                          var value = Math.floor(Math.random() * (max - min) + min);
+                                          user.xp += value;
+                                          rreward = {xp:value};
                                           break;
                                       }
                                       break;
@@ -233,83 +233,105 @@ router.get("/ghost/:map/:limit?", function (req, res) {
         limit = parseInt(req.params.limit);
     }
 
-    mysql.map.getMap(req.params.map, function (err, rows) {
-        if (err) {
-            res.json({ error: "Error getting map" });
-            return;
-        }
+    async.waterfall([
+        function(callback){
+            mysql.map.getMap(req.params.map, function (err, rows) {
+                if (err) {
+                    res.json({ error: "Error getting map" });
+                    callback(err);
+                    return;
+                }
 
-        if (rows.length == 0) {
-            res.json({ error: "Map doesn't exist" });
-            return;
-        }
-        var map = rows[0];
+                if (rows.length == 0) {
+                    res.json({ error: "Map doesn't exist" });
+                    callback(true);
+                    return;
+                }
 
-        mysql.map.getCurrentMap(function (err, rows) {
-            if (err) {
-                res.json({ error: "Error getting current map" });
-                return;
-            }
-            if (rows.length == 0) {
-                res.json({ error: "No current map" });
-                return;
-            }
+                var map = rows[0];
+                callback(null, map)
+            });
+        },
+        function(map, callback){
+            mysql.map.getCurrentMap(function (err, rows) {
+                if (err) {
+                    res.json({ error: "Error getting current map" });
+                    callback(err);
+                    return;
+                }
 
-            if (rows[0].id_m == map.id_m) {
+                if (rows.length == 0) {
+                    res.json({ error: "No current map" });
+                    callback(true);
+                    return;
+                }
+
+                if(rows[0].id_m == map.id_m){
                     //CURRENT
                     if (req.connected) {
                         //CONNECTED
                         var ghosts = [];
-                        mysql.run.getUserMapRun(req.connected.id, map.id_m, 1, function (err, rows) {
-                            if (err) {
 
-                                return;
-                            }
-                            if (rows.length > 0) {
-                                limit--;
-                                rows[0].me = true;
-                                ghosts.push(rows[0]);
-                            }
-                            mysql.run.getFollowingRuns(req.connected.id, map.id_m, 1, function (err, rows) {
-                                for (var i in rows) {
-                                    rows[i].follow = true;
-                                }
-
-                                ghosts = ghosts.concat(rows);
-                                limit -= rows.length;
-                                if (limit < 1) {
-                                    limit = 1;
-                                }
-                                mysql.run.getMapBestRuns(req.params.map, limit, 1, 0, function (err, rows) {
-                                    for (var i in rows) {
-                                        var alreadyIn = false;
-                                        for (var j in ghosts) {
-                                            if (ghosts[j].id_u == rows[i].id_u) {
-                                                alreadyIn = true;
-                                                break;
-                                            }
+                        async.waterfall([
+                            function(callback2){
+                                mysql.run.getUserMapRun(req.connected.id, map.id_m, 1, function (err, rows) {
+                                    if(!err && rows.length > 0){
+                                     limit--;
+                                     rows[0].me = true;
+                                     ghosts.push(rows[0]);
+                                 }
+                                 callback2(null);
+                             });
+                            },
+                            function(callback2){
+                                mysql.run.getFollowingRuns(req.connected.id, map.id_m, 1, function (err, rows) {
+                                    if(!err){
+                                        for (var i in rows) {
+                                            rows[i].follow = true;
                                         }
-                                        if (!alreadyIn) {
-                                            ghosts.push(rows[i]);
+                                        ghosts = ghosts.concat(rows);
+                                        limit -= rows.length;
+                                        if (limit < 1) {
+                                            limit = 1;
+                                        }
+                                    }
+                                    callback2(null);
+                                });
+                            },
+                            function(callback2){
+                                mysql.run.getMapBestRuns(map.id_m, limit, 1, 0, function (err, rows) {
+                                    if(!err){
+                                        for (var i in rows) {
+                                            var alreadyIn = false;
+                                            for (var j in ghosts) {
+                                                if (ghosts[j].id_u == rows[i].id_u) {
+                                                    alreadyIn = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!alreadyIn) {
+                                                ghosts.push(rows[i]);
+                                            }
                                         }
                                     }
                                     res.json(ghosts);
                                 });
-                            });
-});
-} else {
+                            }
+                            ]);
+}else{
                         //GUEST
-                        mysql.run.getMapBestRuns(req.params.map, limit, 1, 0, function (err, rows) {
+                        mysql.run.getMapBestRuns(map.id_m, limit, 1, 0, function (err, rows) {
                             if (err) {
                                 res.json({ error: "Error getting ghosts" });
+                                callback(true);
                                 return;
                             }
                             res.json(rows);
+                            callback(null, true);
                         });
                     }
-                } else {
-                    //NOT CURRENT => master/gold/silver/bronze
-                    var nbRun = 0;
+                }else{
+                    //NOT CURRENT
                     var ghosts = [];
 
                     getMedailsRuns(map.id_m, function (medails) {
@@ -318,6 +340,7 @@ router.get("/ghost/:map/:limit?", function (req, res) {
                         }
 
                         if (req.connected) {
+                            //CONNECTED
                             mysql.run.getUserMapRun(req.connected.id, map.id_m, 0, function (err, rows) {
                                 if (rows.length > 0) {
                                     rows[0].me = true;
@@ -333,12 +356,14 @@ router.get("/ghost/:map/:limit?", function (req, res) {
                                 });
                             });
                         } else {
+                            //GUEST
                             res.json(ghosts);
                         }
                     });
 }
-})
 });
+}
+]);
 });
 
 var getMedailsRuns = function (mapid, cb) {
@@ -409,10 +434,10 @@ var getMedailsRuns = function (mapid, cb) {
                     }
                     callback();
                 });
-        }
-        ], function(err, res){
-            cb(ghosts);
-        });
+}
+], function(err, res){
+    cb(ghosts);
+});
 
 }
 
@@ -447,8 +472,8 @@ var getRewards = function (rewards, newmedail, oldmedail) {
     return toreward;
 }
 
-    return {
-        getMedailsRuns:getMedailsRuns,
-        getMedail:getMedail
-    }
+return {
+    getMedailsRuns:getMedailsRuns,
+    getMedail:getMedail
+}
 }

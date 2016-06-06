@@ -1,27 +1,115 @@
-<canvas id="game" width="500" height="500">
+<canvas id="game" width="2000" height="1000" style="border:1px solid black;">
 
 <script>
 var tilesize = 5;
 
-var steps = {
-    right:{
-        weight:9,
-        minx:4,
-        maxx:7,
-        miny:0,
-        maxy:2   
-    }
-}
-
-var currentBox = null;
-
 var Box = function(x, y, w, h){
-    this.minx = x;
-    this.maxx = x + w;
+    this.x = x;
+    this.y = y;
 
-    this.miny = y;
-    this.maxy = y + h;
+    this.w = w;
+    this.h = h;
 }
+
+var rand = function(min, max){
+    var res = Math.floor(Math.random() * (max - min + 1) + min)
+    return res;
+}
+
+var right = function(box){
+    var gap = rand(1,5);
+    var width = rand(1,5);
+    var height = rand(1,4);
+
+    return new Box(box.x + box.w + gap, box.y, width, height);
+}
+
+var upright = function(box){
+    var gap = rand(0,3);
+    var gapH = rand(1,6);
+    var width = rand(1,5);
+    var height = rand(1,4);
+
+    return new Box(box.x + box.w + gap, box.y - gapH, width, height);
+}
+
+var upleft = function(box){
+    var gap = rand(0,3);
+    var gapH = rand(1,6);
+    var width = rand(1,5);
+    var height = rand(1,4);
+
+    return new Box(box.x - gap - width, box.y - gapH, width, height);
+}
+
+var drop = function(box){
+    var gap = rand(-2,5);
+    var gapH = rand(1,6);
+    var width = rand(3,5);
+    var height = rand(1,4);
+
+    return new Box(box.x + box.w + gap, box.y + gapH, width, height);
+}
+
+
+
+function generate(){
+    var world = [];
+
+    var directions = {
+        RIGHT:0,
+        UPRIGHT:1,
+        UPLEFT:2,
+        UP:3,
+        DROP:4
+    };
+
+    var prevdir = directions.RIGHT;
+
+    var currentBox = null;
+
+    var nb = new Box(20, 100, 1, 1);
+    currentBox = nb;
+    world.push(currentBox);
+
+    var repeat = function(n, f){
+        for(var i = 0; i < n; i++){
+            var nb = f(currentBox);
+            currentBox = nb;
+            world.push(nb);
+        }
+    }
+
+    for(var i = 0; i < 30; i++){
+        var dirArray = [directions.RIGHT, directions.RIGHT, directions.UPRIGHT, directions.UPLEFT, directions.DROP, directions.DROP];
+        var newDir = dirArray[rand(0, dirArray.length)];
+        switch(newDir){
+            case directions.RIGHT:
+                if(prevdir == directions.UPLEFT){
+                    repeat(1, right);
+                }
+                repeat(rand(3,6), right);
+            break;
+            case directions.UPRIGHT:
+                repeat(rand(2,4), upright);
+            break;
+            case directions.UPLEFT:
+                if(prevdir == directions.RIGHT)
+                    continue;
+                repeat(rand(1,3), upleft);
+            break;
+            case directions.DROP:
+                if(prevdir == directions.UPLEFT){
+                    continue;
+                }
+                repeat(rand(1,3), drop);
+            break;
+        }
+        prevdir = newDir;
+    }
+    return world;
+}
+
 
 var worldSize = {
     x:50,
@@ -30,90 +118,18 @@ var worldSize = {
 
 var world = [];
 
-var random = function(min, max){
-    return Math.floor(Math.random() * (max + 1 - min) + min);
-}
-
-var display = function(){
+var display = function(world, tilesize){
     var canvas = document.querySelector("#game");
     var ctx = canvas.getContext("2d");
 
     for(var i in world){
-        for(var j in world[i]){
-            if(world[i][j] == 1){
-                ctx.fillRect(i * tilesize, j * tilesize, tilesize, tilesize);
-            }
-        }
+        var b = world[i];
+        ctx.fillRect(b.x * tilesize, b.y * tilesize, b.w * tilesize, b.h * tilesize);
     }
-
 }
 
-
-
-var init = function(){
-    for(var i in Moves){
-        Moves[i].poids = 0;
-        for(var j in Moves[i].suite){
-            Moves[i].poids += Moves[i].suite[j];
-        }
-    }
-
-    world = [];
-    for(var i = 0; i < worldSize.x; i++){
-        world[i] = [];
-        for(var j = 0; j < worldSize.y; j++){
-            world[i][j] = 0;
-        }
-    }
-
-    console.log(Moves);
-}
-
-var Position = {
-    x:20,
-    y:20
-}
-
-
-init();
-
-var currentState = "init";
-for(var boucle = 0; boucle < 10; boucle++){
-
-
-    var middleX = Math.floor(Moves[currentState].move.length/2);
-    var middleY = Math.floor(Moves[currentState].move[0].length/2);
-
-
-    for(var i in Moves[currentState].move){
-        for(var j in Moves[currentState].move[i]){
-            if(Moves[currentState].move[i][j] != 0){
-                world[Position.x + parseInt(i) - middleX][Position.y + parseInt(j) - middleY]  = 1;
-                if(Moves[currentState].move[i][j] == 2){
-                    Position.x += i - middleX;
-                    Position.y += j - middleY;
-                }
-            }
-        }
-    }
-
-    console.log(currentState, Position.x+"/"+Position.y);
-
-
-    var next = random(0, Moves[currentState].poids);
-
-    var sum = 0;
-    for(var i in Moves[currentState].suite){
-        sum += Moves[currentState].suite[i];
-        if(sum >= next){
-            currentState = i;
-            break;
-        }
-    }
-
-}
-
-display();
+var world = generate();
+display(world, 5);
 
 
 </script>
