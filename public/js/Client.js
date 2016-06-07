@@ -72,7 +72,15 @@ Client.prototype.initialize = function(){
 			pseudo:this.runs[i].login
 		});
 		p.reset();
-		p.positions = JSON.parse(this.runs[i].positions);
+		p.positions = this.runs[i].positions.split("|");
+		for(var i in p.positions){
+			var values = p.positions[i].split(";");
+			p.positions[i] = {
+				x:parseInt(values[0]),
+				y:parseInt(values[1]),
+				t:parseInt(values[2])
+			}
+		}
 		this.ghosts.push(p);
 	}
 }

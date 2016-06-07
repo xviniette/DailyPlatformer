@@ -70,6 +70,9 @@ module.exports = function (app) {
                     db.query("SELECT r.*, u.login FROM runs r, users u WHERE id_m = ? AND r.id_u = u.id_u ORDER BY time ASC LIMIT ? OFFSET ?;", [map, limit, offset], callback);
                 }
             },
+            getAllRuns:function(callback){
+                db.query("SELECT * FROM runs;", callback);
+            },
             getAllRankedRuns: function (map, callback) {
                 db.query("SELECT * FROM runs r, users u WHERE r.id_m = ? AND r.ranked = 1 AND r.id_u = u.id_u ORDER BY r.time ASC, r.id_r ASC;", [map], callback);
             },

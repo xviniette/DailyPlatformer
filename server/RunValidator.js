@@ -31,7 +31,7 @@ module.exports.runIsValid = function (map, inputs) {
         player.update(inputs[i]);
 
         if (incrementeInterval == 0) {
-            positions.push({ x: player.x, y: player.y, t: Math.floor(total / saveInterval * 1000 / SAVE_FPS) });
+            positions.push([player.x, player.y, Math.floor(total / saveInterval * 1000 / SAVE_FPS)].join(";"));
         }
         incrementeInterval++;
         total++;
@@ -39,13 +39,13 @@ module.exports.runIsValid = function (map, inputs) {
             incrementeInterval = 0;
         }
     }
-    positions.push({ x: player.x, y: player.y, t: Math.floor(total / saveInterval * 1000 / SAVE_FPS) });
+    positions.push([player.x, player.y, Math.floor(total / saveInterval * 1000 / SAVE_FPS)].join(";"));
 
     if (finished) {
         return {
             valid: true,
             time: inputs.length * Math.floor(1000 / FPS),
-            positions: positions
+            positions: positions.join("|")
         }
     } else {
         return false;

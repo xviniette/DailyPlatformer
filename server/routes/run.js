@@ -49,7 +49,7 @@ module.exports = function (app, router) {
                             id_m: rows[0].id_m,
                             id_u: req.connected.id,
                             time: valid.time,
-                            positions: JSON.stringify(valid.positions),
+                            positions: valid.positions,
                         };
                         callback(null, dataRun);
                     });
@@ -127,8 +127,8 @@ module.exports = function (app, router) {
                                 xp: 30,
                             }
                         };
-                        
-                        if (Date.now() / 1000 - map.timestamp > 3600*24*7){
+
+                        if (Date.now() / 1000 - map.timestamp > 3600 * 24 * 7) {
                             //If older than one week => no rewards
                             medailsRewards = {};
                         }
@@ -534,3 +534,4 @@ module.exports = function (app, router) {
         getMedail: getMedail
     }
 }
+
