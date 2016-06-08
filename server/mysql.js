@@ -152,6 +152,20 @@ module.exports = function (app) {
             deleteFollow: function (follower, followed, callback) {
                 db.query("DELETE FROM followers WHERE id_follower = ? AND id_followed = ?;", [follower, followed], callback);
             }
+        },
+        achievement:{
+            getAchievements:function(callback){
+                db.query("SELECT * FROM achievements;", callback);
+            },
+            getUserAchievements:function(user, callback){
+                db.query("SELECT a.* FROM achievements a, user_achievement ua WHERE ua.id_u = ? AND ua.id_a = a.id_a;", [user], callback);
+            },
+            getNonUserAchievements:function(user, callback){
+                db.query("SELECT a.* FROM achievements a WHERE NOT EXISTS(SELECT * FROM user_achievement ua WHERE a.id_a = ua.id_a AND ua.id_u = ?);", [user], callback);
+            },
+            addUserAchievement:function(user, achievement, callback){
+                db.query("INSERT INTO user_achievement SET ?", { id_u: user, id_a: achievement }, callback);
+            }
         }
     }
 }

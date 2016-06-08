@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.12
+-- version 4.5.1
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mer 08 Juin 2016 à 01:09
--- Version du serveur :  5.6.16
--- Version de PHP :  5.5.11
+-- Généré le :  Mer 08 Juin 2016 à 16:35
+-- Version du serveur :  10.1.9-MariaDB
+-- Version de PHP :  5.6.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données :  `platformer`
@@ -23,15 +23,36 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `achievements`
+--
+
+CREATE TABLE `achievements` (
+  `id_a` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text,
+  `conditions` text,
+  `rewards` text,
+  `difficulty` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `achievements`
+--
+
+INSERT INTO `achievements` (`id_a`, `title`, `description`, `conditions`, `rewards`, `difficulty`) VALUES
+(1, 'Achieve 1', 'azeazeaeaea', '{"xp":10000}', '{"xp":4}', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `followers`
 --
 
-CREATE TABLE IF NOT EXISTS `followers` (
-  `id_f` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `followers` (
+  `id_f` int(11) NOT NULL,
   `id_follower` int(11) DEFAULT NULL,
-  `id_followed` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_f`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `id_followed` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -39,17 +60,16 @@ CREATE TABLE IF NOT EXISTS `followers` (
 -- Structure de la table `maps`
 --
 
-CREATE TABLE IF NOT EXISTS `maps` (
-  `id_m` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `maps` (
+  `id_m` int(11) NOT NULL,
   `timestamp` int(11) DEFAULT NULL,
   `tiles` text,
   `player` text,
   `master` int(11) DEFAULT NULL,
   `gold` int(11) DEFAULT NULL,
   `silver` int(11) DEFAULT NULL,
-  `bronze` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_m`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+  `bronze` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `maps`
@@ -65,16 +85,15 @@ INSERT INTO `maps` (`id_m`, `timestamp`, `tiles`, `player`, `master`, `gold`, `s
 -- Structure de la table `runs`
 --
 
-CREATE TABLE IF NOT EXISTS `runs` (
-  `id_r` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `runs` (
+  `id_r` int(11) NOT NULL,
   `id_m` int(11) DEFAULT NULL,
   `id_u` int(11) DEFAULT NULL,
   `id_s` int(11) DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
   `positions` text,
-  `ranked` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id_r`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=36 ;
+  `ranked` tinyint(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `runs`
@@ -111,13 +130,12 @@ INSERT INTO `runs` (`id_r`, `id_m`, `id_u`, `id_s`, `time`, `positions`, `ranked
 -- Structure de la table `skins`
 --
 
-CREATE TABLE IF NOT EXISTS `skins` (
-  `id_s` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `skins` (
+  `id_s` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `rarity` int(11) DEFAULT NULL,
-  `price` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_s`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=141 ;
+  `price` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `skins`
@@ -271,8 +289,8 @@ INSERT INTO `skins` (`id_s`, `title`, `rarity`, `price`) VALUES
 -- Structure de la table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id_u` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id_u` int(11) NOT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `token` text,
@@ -281,9 +299,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `xp` int(11) DEFAULT NULL,
   `golds` int(11) DEFAULT NULL,
   `gems` int(11) DEFAULT NULL,
-  `nextdrop` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_u`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+  `nextdrop` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `users`
@@ -315,15 +332,26 @@ INSERT INTO `users` (`id_u`, `login`, `password`, `token`, `elo`, `sigma`, `xp`,
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `user_achievement`
+--
+
+CREATE TABLE `user_achievement` (
+  `id_ua` int(11) NOT NULL,
+  `id_u` int(11) DEFAULT NULL,
+  `id_a` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `user_skin`
 --
 
-CREATE TABLE IF NOT EXISTS `user_skin` (
-  `id_us` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user_skin` (
+  `id_us` int(11) NOT NULL,
   `id_u` int(11) DEFAULT NULL,
-  `id_s` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_us`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=93 ;
+  `id_s` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `user_skin`
@@ -423,6 +451,102 @@ INSERT INTO `user_skin` (`id_us`, `id_u`, `id_s`) VALUES
 (91, 1, 51),
 (92, 1, 100);
 
+--
+-- Index pour les tables exportées
+--
+
+--
+-- Index pour la table `achievements`
+--
+ALTER TABLE `achievements`
+  ADD PRIMARY KEY (`id_a`);
+
+--
+-- Index pour la table `followers`
+--
+ALTER TABLE `followers`
+  ADD PRIMARY KEY (`id_f`);
+
+--
+-- Index pour la table `maps`
+--
+ALTER TABLE `maps`
+  ADD PRIMARY KEY (`id_m`);
+
+--
+-- Index pour la table `runs`
+--
+ALTER TABLE `runs`
+  ADD PRIMARY KEY (`id_r`);
+
+--
+-- Index pour la table `skins`
+--
+ALTER TABLE `skins`
+  ADD PRIMARY KEY (`id_s`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id_u`);
+
+--
+-- Index pour la table `user_achievement`
+--
+ALTER TABLE `user_achievement`
+  ADD PRIMARY KEY (`id_ua`);
+
+--
+-- Index pour la table `user_skin`
+--
+ALTER TABLE `user_skin`
+  ADD PRIMARY KEY (`id_us`);
+
+--
+-- AUTO_INCREMENT pour les tables exportées
+--
+
+--
+-- AUTO_INCREMENT pour la table `achievements`
+--
+ALTER TABLE `achievements`
+  MODIFY `id_a` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT pour la table `followers`
+--
+ALTER TABLE `followers`
+  MODIFY `id_f` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `maps`
+--
+ALTER TABLE `maps`
+  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT pour la table `runs`
+--
+ALTER TABLE `runs`
+  MODIFY `id_r` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+--
+-- AUTO_INCREMENT pour la table `skins`
+--
+ALTER TABLE `skins`
+  MODIFY `id_s` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id_u` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+--
+-- AUTO_INCREMENT pour la table `user_achievement`
+--
+ALTER TABLE `user_achievement`
+  MODIFY `id_ua` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `user_skin`
+--
+ALTER TABLE `user_skin`
+  MODIFY `id_us` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

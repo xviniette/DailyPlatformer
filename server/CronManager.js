@@ -70,8 +70,6 @@ module.exports = function (app) {
         });
     }
     
-    endRankedCompute();
-
 
     var job = new CronJob({
         cronTime: '00 00 00,12 * * *',
