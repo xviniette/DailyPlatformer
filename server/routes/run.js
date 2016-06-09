@@ -88,16 +88,16 @@ module.exports = function (app, router) {
                             return;
                         }
 
-                        var map = rows[0];
+                        var currentMap = rows[0];
 
                         dataRun.ranked = 0;
-                        if (map.id_m == dataRun.id_m) {
+                        if (currentMap.id_m == dataRun.id_m) {
                             dataRun.ranked = 1;
                         }
-                        callback(null, dataRun, user, map, randomReward);
+                        callback(null, dataRun, user, currentMap, randomReward);
                     });
                 },
-                function (dataRun, user, map, randomReward, callback) {
+                function (dataRun, user, currentMap, randomReward, callback) {
                     mysql.run.getUserMapRun(dataRun.id_u, dataRun.id_m, dataRun.ranked, function (err, rows) {
                         if (err) {
                             res.json({ error: "Error getting user run" });
@@ -128,8 +128,9 @@ module.exports = function (app, router) {
                             }
                         };
 
-                        if (Date.now() / 1000 - map.timestamp > 3600 * 24 * 7) {
-                            //If older than one week => no rewards
+                        var NB_MAP_REWARD = 10;
+                        if(currentMap.id_m - dataRun.id_m > NB_MAP_REWARD){
+                            //If mal older than 10 maps => no rewards
                             medailsRewards = {};
                         }
 
