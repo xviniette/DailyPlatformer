@@ -1,7 +1,7 @@
 body{
     margin:0;
     padding:0;
-    font-size: 5vw;
+    font-size: 3vw;
 }
 
 #canvas{
@@ -15,27 +15,36 @@ body{
 
 .right_menu{
     position: absolute;
-    top:0vw;
+    top:1vw;
     right:1vw;
+    margin: 0;
 }
 
 .left_menu{
     position: absolute;
-    top:0vw;
+    top:1vw;
     left:1vw;
     padding:0;
+    margin: 0;
 }
 
-.left_menu, .right_menu={
+.left_menu, .right_menu{
     list-style: none;
 }
 
 .left_menu li, .right_menu li{
     display: inline-block;
+    vertical-align: top;
     background-color: red;
+    cursor: pointer;
 }
 
-#timeleft{
+.right_menu li{
+    width:5vw;
+    height:5vw;
+}
+
+#timer{
     position: absolute;
     width:50vw;
     bottom: 1vw;
@@ -69,4 +78,40 @@ body{
     top: 50%;
     transform: translate(-50%, -50%);
     background-color: purple;
+}
+
+#timeleft{
+    position: absolute;
+    width:50vw;
+    top: 1vw;
+    left: 25vw;
+    text-align: center;
+    background-color: blue;
+}
+
+#rankingNav{
+    background-image: url(img/podium.png);
+    background-size: 100%;
+}
+
+#listNav{
+    background-image: url(img/list.png);
+    background-size: 100%;
+}
+
+#socialNav{
+    background-image: url(img/social.png);
+    background-size: 100%;
+}
+
+#optionNav{
+    background-image: url(img/cog.png);
+    background-size: 100%;
+}
+
+#skinNav{
+    width:5vw;
+    height:5vw;
+    background-image: url(img/skin.png);
+    background-size: 100%;
 }
