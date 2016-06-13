@@ -2,10 +2,6 @@ body{
     margin:0;
     padding:0;
     font-size: 5vw;
-    -webkit-transform: translate3d(0, 0, 0);
-   -moz-transform: translate3d(0, 0, 0);
-   -ms-transform: translate3d(0, 0, 0);
-   transform: translate3d(0, 0, 0);
 }
 
 #canvas{
@@ -65,4 +61,12 @@ body{
     left: 25vw;
     width: 50vw;
     background-color: yellow;
+}
+
+#ranking{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: purple;
 }
