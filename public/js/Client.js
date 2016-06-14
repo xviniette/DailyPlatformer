@@ -1,6 +1,8 @@
 var Client = function(){
 	this.display = new Display({client:this});
 
+	this.pid = null;
+
 	this.delta = 1000/FPS/1000;
 
 	this.map = null;

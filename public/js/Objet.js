@@ -120,7 +120,7 @@ Objet.prototype.physic = function () {
 Objet.prototype.hasWallCollision = function (cx, cy) {
     var tiles = this.room.map.tiles;
     if (cx < 0 || cx >= tiles.length || cy < 0 || cy >= tiles[cx].length) {
-        return true;
+        return false;
     }
     return (tiles[cx][cy] === 1);
 }
@@ -128,7 +128,7 @@ Objet.prototype.hasWallCollision = function (cx, cy) {
 Objet.prototype.hasFinishCollision = function (cx, cy) {
     var tiles = this.room.map.tiles;
     if (cx < 0 || cx >= tiles.length || cy < 0 || cy >= tiles[cx].length) {
-        return true;
+        return false;
     }
     return (tiles[cx][cy] === 2);
 }

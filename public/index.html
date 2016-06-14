@@ -1,20 +1,87 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset='UTF-8' />
 	<title>GameEngine</title>
+	<link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
-<body>	
 
-	<canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+<body>
+	<canvas id="canvas"></canvas>
 
-	<div id="physics">
+	<div id="achievement">
+        <div id="achieveTitle">First ranked</div>
+        <div id="description"> jzahe kjahz lkeahkzjehlkazhek lkajzhe lkajzheal</div>
+    </div>
+
+	<ul class="left_menu">
+		<li id="profileNav" v-on:click="click">
+			<div id="pseudo">ElBazia</div>
+			<div id="elo">412</div>
+			<div id="xp">12</div>
+		</li>
+		<li id="skinNav">
+			<div id="gold">412</div>
+			<div id="gems">12</div>
+		</li>
+	</ul>
+
+
+	<ul class="right_menu">
+		<li id="rankingNav"></li>
+		<li id="listNav"></li>
+		<li id="socialNav"></li>
+		<li id="optionNav"></li>
+	</ul>
+
+	<div id="timer">01:48.42</div>
+
+	<div class="position">
+		<span id="myPosition">17<span class="eme">th</span></span>/
+		<span id="totalPosition">2431</span>
+	</div>
+
+	<div id="profile" class="modal">
+		{{login}}
+	</div>
+
+	<div id="skin" class="modal">
+		Golds Gems Ouvrir Coffre (par Golds ou gems) (popup conf ?) User Skins par rarity desc Non User Skins par rarity desc avec
+		prix gems clickable (popup conf ?) grayscale
+	</div>
+
+	<div id="ranking" class="modal">
+		Map ranked, unranked General Elo/XP Ma position si pas dans la liste
+	</div>
+
+	<div id="map" class="modal">
+		Current Timeleft My Time (Position ?) Previous Medal Time (Rewarded highlight)
+	</div>
+
+	<div id="follow" class="modal">
+		Followers (Pseudo, elo, lvl) Following (Pseudo, elo, lvl) (search bar)
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+	<div id="physics" style="display:none">
 		<br/>xmaxspeed <input type="range" v-model="xmaxspeed" max="1000" min="0"> <input type="number" v-model="xmaxspeed">
 		<br/>groundAcceleration <input type="range" v-model="groundAcceleration" max="1000" min="0"> <input type="number" v-model="groundAcceleration">
 		<br/>airAcceleration <input type="range" v-model="airAcceleration" max="1000" min="0"> <input type="number" v-model="airAcceleration">
 		<br/>groundFriction <input type="range" v-model="groundFriction" max="1000" min="0"> <input type="number" v-model="groundFriction">
 		<br/>airFriction <input type="range" v-model="airFriction" max="1000" min="0"> <input type="number" v-model="airFriction">
-		<br/>groundFrictionThreshold <input type="range" v-model="groundFrictionThreshold" max="1000" min="0"> <input type="number" v-model="groundFrictionThreshold">
+		<br/>groundFrictionThreshold <input type="range" v-model="groundFrictionThreshold" max="1000" min="0"> <input type="number"
+			v-model="groundFrictionThreshold">
 		<br/>airFrictionThreshold <input type="range" v-model="airFrictionThreshold" max="1000" min="0"> <input type="number" v-model="airFrictionThreshold">
 		<br/>normalGravity <input type="range" v-model="normalGravity" max="1000" min="0"> <input type="number" v-model="normalGravity">
 		<br/>normalMaxGravity <input type="range" v-model="normalMaxGravity" max="1000" min="0"> <input type="number" v-model="normalMaxGravity">
@@ -27,7 +94,7 @@
 	</div>
 
 
-	<form id="login_form" v-on:submit.prevent="submit">
+	<!--<form id="login_form" v-on:submit.prevent="submit">
 		<input type="text" v-model="login">
 		<input type="text" v-model="password">
 		<input type="submit" value="Connexion">
@@ -39,7 +106,7 @@
 		<input type="submit" value="Inscription">
 	</form>
 
-	<button id="disconnect" v-on:click="disconnect">Deconnexion</button>
+	<button id="disconnect" v-on:click="disconnect">Deconnexion</button>-->
 
 	<script src="js/lib/jquery.js"></script>
 	<script src="js/lib/vue.js"></script>
@@ -48,6 +115,7 @@
 	<script src="js/config.js"></script>
 	<script src="js/userEvent.js"></script>
 	<script src="js/clientFunctions.js"></script>
+	<script src="js/vues.js"></script>
 
 
 	<script src="js/Objet.js"></script>
@@ -58,4 +126,5 @@
 	<script src="js/Client.js"></script>
 
 </body>
+
 </html>

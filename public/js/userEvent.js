@@ -18,6 +18,15 @@ $(function(){
 		}
 	});
 
+	window.addEventListener('resize', resizeCanvas, false);
+
+	var resizeCanvas = function(){
+		var canvas = document.querySelector("#canvas");
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+	resizeCanvas();
+
 	//LOGIN
 	vues.login = new Vue({
 		el: '#login_form',
