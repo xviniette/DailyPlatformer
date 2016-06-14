@@ -16,12 +16,12 @@
     </div>
 
 	<ul class="left_menu">
-		<li id="profileNav" v-on:click="click">
+		<li id="profileNav" class="menu" modal="profile">
 			<div id="pseudo">ElBazia</div>
 			<div id="elo">412</div>
 			<div id="xp">12</div>
 		</li>
-		<li id="skinNav">
+		<li id="skinNav" class="menu" modal="skin">
 			<div id="gold">412</div>
 			<div id="gems">12</div>
 		</li>
@@ -29,10 +29,10 @@
 
 
 	<ul class="right_menu">
-		<li id="rankingNav"></li>
-		<li id="listNav"></li>
-		<li id="socialNav"></li>
-		<li id="optionNav"></li>
+		<li class="menu" id="rankingNav" modal="ranking"></li>
+		<li class="menu" id="listNav" modal="map"></li>
+		<li class="menu" id="socialNav" modal="social"></li>
+		<li class="menu" id="optionNav" modal="option"></li>
 	</ul>
 
 	<div id="timer">01:48.42</div>
@@ -43,7 +43,7 @@
 	</div>
 
 	<div id="profile" class="modal">
-		{{login}}
+		{{profile.login}} {{profile.elo}} {{profile.xp}}
 	</div>
 
 	<div id="skin" class="modal">
@@ -59,7 +59,7 @@
 		Current Timeleft My Time (Position ?) Previous Medal Time (Rewarded highlight)
 	</div>
 
-	<div id="follow" class="modal">
+	<div id="social" class="modal">
 		Followers (Pseudo, elo, lvl) Following (Pseudo, elo, lvl) (search bar)
 	</div>
 

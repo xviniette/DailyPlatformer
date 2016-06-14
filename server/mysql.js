@@ -120,13 +120,13 @@ module.exports = function (app) {
                 db.query("SELECT * FROM skins s, user_skin us WHERE us.id_u = ? AND us.id_s = s.id_s ORDER BY s.rarity DESC;", [user], callback);
             },
             getAllSkins: function (callback) {
-                db.query("SELECT * FROM skins;", callback);
+                db.query("SELECT * FROM skins ORDER BY rarity DESC;", callback);
             },
             addUserSkin: function (user, skin, callback) {
                 db.query("INSERT INTO user_skin SET ?", { id_u: user, id_s: skin }, callback);
             },
             getNonUserSkins: function (user, callback) {
-                db.query("SELECT * FROM skins s WHERE NOT EXISTS (SELECT * FROM user_skin us WHERE us.id_s = s.id_s AND us.id_u = ?) ORDER BY s.rarity;", [user], callback);
+                db.query("SELECT * FROM skins s WHERE NOT EXISTS (SELECT * FROM user_skin us WHERE us.id_s = s.id_s AND us.id_u = ?) ORDER BY s.rarity DESC;", [user], callback);
             },
             addSkin: function (datas, callback) {
                 db.query("INSERT INTO skins SET ?", datas, callback);
