@@ -11,9 +11,9 @@
 	<canvas id="canvas"></canvas>
 
 	<div id="achievement">
-        <div id="achieveTitle">First ranked</div>
-        <div id="description"> jzahe kjahz lkeahkzjehlkazhek lkajzhe lkajzheal</div>
-    </div>
+		<div id="achieveTitle">First ranked</div>
+		<div id="description"> jzahe kjahz lkeahkzjehlkazhek lkajzhe lkajzheal</div>
+	</div>
 
 	<ul class="left_menu">
 		<li id="profileNav" class="menu" modal="profile">
@@ -43,23 +43,57 @@
 	</div>
 
 	<div id="profile" class="modal">
-		{{profile.login}} {{profile.elo}} {{profile.xp}}
+		<div class="close"><button>X</button></div>
+		<button>Follow</button>
+		<h1>{{profile.login}}</h1>
+		<h2>Elo : {{profile.elo}}</h2>
+		<h2>XP : {{profile.xp}}</h2>
+		<h1>Skins : {{skins.length}}</h1>
+		<ul>
+			<li v-for="skin in skins">{{skin.title}}</li>
+		</ul>
+		<h1>Achievements : {{achievements.length}}</h1>
+		<ul>
+			<li v-for="achivement in achievements">{{achivement.title}}</li>
+		</ul>
+
+		+ followers (nb) + following
 	</div>
 
 	<div id="skin" class="modal">
-		Golds Gems Ouvrir Coffre (par Golds ou gems) (popup conf ?) User Skins par rarity desc Non User Skins par rarity desc avec
-		prix gems clickable (popup conf ?) grayscale
+		<div class="close"><button>X</button></div>
+		Golds : {{golds}} Gems : {{gems}}
+		<button @click="drop()">Ouvrir coffre (Golds)</button>
+		<button @click="drop(1)">Ouvrir coffre (Gems)</button>
+		<h1>My Skins ({{userSkins.length}})</h1>
+		<ul>
+			<li v-for="skin in userSkins">{{skin.title}}</li>
+		</ul>
+		<h1>Remaining Skins ({{nonUserSkins.length}})</h1>
+		<ul>
+			<li v-for="skin in nonUserSkins">{{skin.title}} <button @click="buy(skin.id_s)">Buy ({{skin.price}} gems)</button></li>
+		</ul>
+		<!--Golds Gems Ouvrir Coffre (par Golds ou gems) (popup conf ?) User Skins par rarity desc Non User Skins par rarity desc avec
+		prix gems clickable (popup conf ?) grayscale-->
 	</div>
 
 	<div id="ranking" class="modal">
+		<div class="close"><button>X</button></div>
 		Map ranked, unranked General Elo/XP Ma position si pas dans la liste
 	</div>
 
 	<div id="map" class="modal">
-		Current Timeleft My Time (Position ?) Previous Medal Time (Rewarded highlight)
+		<div class="close"><button>X</button></div>
+		{{timeleft}}
+		<ul>
+			<li v-for="map in mapRun">{{map.id_m}}</li>
+		</ul>
+
+		<!--Current Timeleft My Time (Position ?) Previous Medal Time (Rewarded highlight)-->
 	</div>
 
 	<div id="social" class="modal">
+		<div class="close"><button>X</button></div>
 		Followers (Pseudo, elo, lvl) Following (Pseudo, elo, lvl) (search bar)
 	</div>
 

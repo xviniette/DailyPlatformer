@@ -218,7 +218,7 @@ module.exports = function (app, router) {
                         if (user[type] >= price[type]) {
                             user[type] -= price[type];
                         } else {
-                            res.json({ error: "Not enough golds" });
+                            res.json({ error: "Not enough "+type });
                             callback(true);
                             return;
                         }
