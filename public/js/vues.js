@@ -13,21 +13,7 @@ $(function () {
 	$(".menu").on("click", function () {
 		switch ($(this).attr("modal")) {
 			case "profile":
-				if(client.user){
-					//Profile
-					$.get("/user/profile", function (res) {
-						vues.profile.$set("profile", res);
-					});
-					$.get("/skin/all/"+client.user.login, function (res) {
-						vues.profile.$set("skins", res);
-					});
-					$.get("/achievement/all/"+client.user.login, function (res) {
-						vues.profile.$set("achievements", res);
-					});
-					$("#profile").show();
-				}else{
-					//Connexion/Inscription
-				}
+				vues.profile.load();
 				break;
 
 			case "skin":
@@ -86,7 +72,23 @@ $(function () {
 			achievements: []
 		},
 		methods: {
-
+			load:function(){
+				if(client.user){
+					//Profile
+					$.get("/user/profile", function (res) {
+						vues.profile.$set("profile", res);
+					});
+					$.get("/skin/all/"+client.user.login, function (res) {
+						vues.profile.$set("skins", res);
+					});
+					$.get("/achievement/all/"+client.user.login, function (res) {
+						vues.profile.$set("achievements", res);
+					});
+				}else{
+					//Connexion/Inscription
+				}
+				$("#profile").show();
+			}
 		}
 	});
 
