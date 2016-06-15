@@ -77,7 +77,11 @@ module.exports = function (app) {
                 db.query("SELECT * FROM runs r, users u WHERE r.id_m = ? AND r.ranked = 1 AND r.id_u = u.id_u ORDER BY r.time ASC, r.id_r ASC;", [map], callback);
             },
             getUserRuns: function (user, ranked, callback) {
-                db.query("SELECT * FROM runs WHERE id_u = ? AND ranked = ?;", [user, ranked], callback);
+                if(ranked == null){
+                    db.query("SELECT * FROM runs WHERE id_u = ?;", [user], callback);
+                }else{
+                    db.query("SELECT * FROM runs WHERE id_u = ? AND ranked = ?;", [user, ranked], callback);
+                }
             },
             getUserMapRun: function (user, map, ranked, callback) {
                 db.query("SELECT r.*, u.login FROM runs r, users u WHERE r.id_u = ? AND r.id_m = ? AND r.ranked = ? AND r.id_u = u.id_u;", [user, map, ranked], callback);

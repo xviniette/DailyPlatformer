@@ -1,7 +1,7 @@
 var Client = function(){
 	this.display = new Display({client:this});
 
-	this.pid = null;
+	this.user = null;
 
 	this.delta = 1000/FPS/1000;
 

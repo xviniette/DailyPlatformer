@@ -362,6 +362,54 @@ module.exports = function (app, router) {
         ]);
     });
 
+    router.get("/all/:user?", function(req, res){
+        if(req.params.user){
+            async.waterfall([
+                function(callback){
+                    mysql.user.getUserByLogin(req.params.user, function(err, rows){
+                        if(err){
+                            res.json({error:"Can't get user"});
+                            callback(err);
+                            return;
+                        }
+                        if(rows.length == 0){
+                            res.json({error:"User doesn't exist"});
+                            callback(true);
+                            return;
+                        }
+
+                        callback(null, rows[0]);
+                    });
+                },
+                function(user, callback){
+                    mysql.run.getUserRuns(user.id_u, null, function(err, rows){
+                        if(err){
+                            res.json({error:"Can't get user runs"});
+                            callback(err);
+                            return;
+                        }
+                        res.json(rows);
+                        callback(null);
+                    });
+                }
+                ]);
+
+        }else{
+            if(req.connected){
+                //connected
+                mysql.run.getUserRuns(req.connected.id, null, function(err, rows){
+                    if(err){
+                        res.json({error:"Can't get user runs"});
+                        return;
+                    }
+                    res.json(rows);
+                })
+            }else{
+                res.json([]);
+            }
+        }
+    })
+
     var getMedailsRuns = function (mapid, cb) {
         var nbRun = 0;
         var ghosts = [];
