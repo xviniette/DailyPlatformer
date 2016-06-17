@@ -290,7 +290,7 @@ module.exports = function (app, router) {
                     } else {
                         var goldsDuplicate = 200;
                         user.golds += goldsDuplicate;
-                        mysql.user.updateUser({ golds: user.golds }, user.id_u);
+                        mysql.user.updateUser({ golds: user.golds, gems:user.gems }, user.id_u);
                         res.json({ skin: skin, duplicate: true, golds: goldsDuplicate });
                         callback(true);
                     }

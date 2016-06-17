@@ -113,7 +113,93 @@ module.exports = function (app, router) {
         }
     });
 
-    router.get("/follow/:user", function (req, res) {
+    router.get("/followers/:user?", function(req, res){
+        async.waterfall([
+            function(callback){
+                if(req.params.user){
+                    mysql.user.getUserByLogin(req.params.user, function(err, rows){
+                        if(err){
+                            res.json({error:"Can't get user"});
+                            callback(err);
+                            return; 
+                        }
+
+                        if(rows.length == 0){
+                            res.json({error:"User doesn't exist"});
+                            callback(true);
+                            return; 
+                        }
+
+                        callback(null, rows[0].id_u);
+                    });
+                }else{
+                    if(req.connected){
+                        callback(null, req.connected.id);
+                    }else{
+                        res.json({error:"Choose a player"});
+                        callback(true);
+                    }
+                }
+            },
+            function(userId, callback){
+                mysql.follow.getFollowersUser(userId, function(err, rows){
+                    if(err){
+                        console.log(err);
+                        res.json({error:"Can't get followers"});
+                        callback(err);
+                        return;
+                    }
+                    res.json(rows);
+                    callback(null);
+                });
+            }
+            ]);
+    });
+
+    router.get("/followeds/:user?", function(req, res){
+        async.waterfall([
+            function(callback){
+                if(req.params.user){
+                    mysql.user.getUserByLogin(req.params.user, function(err, rows){
+                        if(err){
+                            res.json({error:"Can't get user"});
+                            callback(err);
+                            return; 
+                        }
+
+                        if(rows.length == 0){
+                            res.json({error:"User doesn't exist"});
+                            callback(true);
+                            return; 
+                        }
+
+                        callback(null, rows[0].id_u);
+                    });
+                }else{
+                    if(req.connected){
+                        callback(null, req.connected.id);
+                    }else{
+                        res.json({error:"Choose a player"});
+                        callback(true);
+                    }
+                }
+            },
+            function(userId, callback){
+                mysql.follow.getFollowsUser(userId, function(err, rows){
+                    if(err){
+                        console.log(err);
+                        res.json({error:"Can't get followers"});
+                        callback(err);
+                        return;
+                    }
+                    res.json(rows);
+                    callback(null);
+                });
+            }
+            ]);
+    });
+
+    router.post("/follow/:user", function (req, res) {
         if (!req.connected) {
             res.status(401).json({ error: "You must be logged in" });
             return;
@@ -140,7 +226,7 @@ module.exports = function (app, router) {
         });
     });
 
-    router.get("/unfollow/:user", function (req, res) {
+    router.post("/unfollow/:user", function (req, res) {
         if (!req.connected) {
             res.status(401).json({ error: "You must be logged in" });
             return;

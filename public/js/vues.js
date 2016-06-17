@@ -35,7 +35,7 @@ $(function () {
 				break;
 
 			case "social":
-				$("#social").show();
+				vues.social.load();
 				break;
 
 			case "option":
@@ -82,18 +82,19 @@ $(function () {
 		},
 		methods: {
 			load: function () {
+				var _this = this;
 				if (client.user) {
-					this.golds = client.user.golds;
-					this.gems = client.user.gems;
+					_this.golds = client.user.golds;
+					_this.gems = client.user.gems;
 					$.get("/skin/all/" + client.user.login, function (res) {
-						vues.skin.$set("userSkins", res);
+						_this.userSkins = res;
 					});
 					$.get("/skin/notall/" + client.user.login, function (res) {
-						vues.skin.$set("nonUserSkins", res);
+						_this.nonUserSkins = res;
 					});
 				} else {
 					$.get("/skin/all", function (res) {
-						vues.skin.$set("nonUserSkins", res);
+						_this.nonUserSkins = res;
 					});
 				}
 				$("#skin").show();
@@ -214,6 +215,39 @@ $(function () {
 			timeleft:null,
 
 		},
+		computed:{
+			mapRun:function(){
+				var maps = JSON.parse(JSON.stringify(this.maps));
+				var runs = JSON.parse(JSON.stringify(this.runs));
+				var data = [];
+				for(var i = maps.length - 1; i >= 0; i--){
+					if(i == maps.length - 1){
+						maps[i].current = true;
+					}else if(i >= maps.length - 1 - 10){
+						maps[i].rewarded = true;
+					}
+					for(var j in runs){
+						if(runs[j].id_m == maps[i].id_m){
+							if(i == maps.length - 1 &&  runs[j].ranked == 1){
+								maps[i].run = runs[j];
+							}else if(i < maps.length - 1 && runs[j].ranked == 0){
+								maps.run = runs[j];
+								var medals = ["master", "gold", "silver", "bronze"];
+								for(var m of medals){
+									if(runs[j].time <= maps[i][m]){
+										runs[j].medal = m;
+										break;
+									}
+								}
+								maps[i].run = runs[j];
+							}
+						}
+					}
+					data.push(maps[i]);
+				}
+				return data;
+			}
+		},
 		methods: {
 			load: function () {
 				var _this = this;
@@ -229,47 +263,50 @@ $(function () {
 					});
 				}
 				$("#map").show();
-			},
-			mapRunCompute:function(){
-				var data = [];
-				for(var i = this.maps.length - 1; i >= 0; i--){
-					for(var j in this.runs){
-						if(this.runs[j].id_m == this.maps[i].id_m){
-							if(i == 0 &&  this.runs[j].ranked == 1){
-								this.maps[i].current = true;
-								this.maps[i].run = this.runs[j];
-							}else if(i < this.maps.length - 1 && this.runs[j].ranked == 0){
-								this.maps.run = this.runs[j];
-								if(i > this.maps.length - 10){
-									this.maps[i].rewarded = true;
-								}
-								var medals = ["master", "gold", "silver", "bronze"];
-								for(var m of medals){
-									if(this.runs[j].time <= this.maps[i][m]){
-										this.runs[j].medal = m;
-										break;
-									}
-								}
-								this.maps[i].run = this.runs[j];
-							}
-						}
-					}
-					data.push(this.maps[i]);
-				}
-				this.mapRun = data;
 			}
 		}
 	});
 
-	vues.map.$watch("runs", function(){
-				vues.map.mapRunCompute();
-			});	
-	vues.map.$watch("maps", function(){
-				vues.map.mapRunCompute();
-			});	
 	setInterval(function(){
 		if(vues.map.nextTime != null){
 			vues.map.timeleft = vues.map.nextTime - Date.now();
 		}
 	}, 1000);
+
+	vues.social = new Vue({
+		el: '#social',
+		data: {
+			followeds: [],
+			followers: [],
+		},
+		methods: {
+			load: function () {
+				var _this = this;
+				if (client.user) {
+					$.get("/user/followers/", function (res) {
+						_this.followers = res;
+					});
+					$.get("/user/followeds/", function (res) {
+						_this.followeds = res;
+					});
+				}
+				$("#social").show();
+			},
+			follow:function(login){
+				var _this = this;
+				$.post("/user/follow/"+login, function(res){
+					_this.load();
+				});
+			},
+			unfollow:function(login){
+				var _this = this;
+				$.post("/user/unfollow/"+login, function(res){
+					_this.load();
+				});
+			},
+			profile:function(login){
+				vues.profile.load(login);
+			}
+		}
+	});
 });

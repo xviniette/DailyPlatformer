@@ -100,7 +100,7 @@
 		<div class="close"><button>X</button></div>
 		{{timeleft}}
 		<ul>
-			<li v-for="map in mapRun">{{map.id_m}} <span v-if="map.current">Current</span></li>
+			<li v-for="map in mapRun">{{map.id_m}} <span v-if="map.current">Current</span> <span v-if="map.run">Time : {{map.run.time}} <span v-if="!map.current">{{map.run.medal}}</span></span></li>
 		</ul>
 
 		<!--Current Timeleft My Time (Position ?) Previous Medal Time (Rewarded highlight)-->
@@ -108,6 +108,14 @@
 
 	<div id="social" class="modal">
 		<div class="close"><button>X</button></div>
+		<h1>Followers</h1>
+		<ul>
+			<li v-for="follower in followers"><button @click="profile(follower.login)">{{follower.login}}</button> <button @click="follow(follower.login)">Follow</button></li>
+		</ul>
+		<h1>Followeds</h1>
+		<ul>
+			<li v-for="followed in followeds"><button @click="profile(followed.login)">{{followed.login}}</button> <button @click="unfollow(followed.login)">Unfollow</button></li>
+		</ul>
 		Followers (Pseudo, elo, lvl) Following (Pseudo, elo, lvl) (search bar)
 	</div>
 
