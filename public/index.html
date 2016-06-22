@@ -17,13 +17,18 @@
 
 	<ul class="left_menu">
 		<li id="profileNav" class="menu" modal="profile">
-			<div id="pseudo">ElBazia</div>
-			<div id="elo">412</div>
-			<div id="xp">12</div>
+			<div v-if="client.user != null">
+				<div id="pseudo">{{client.user.login}}</div>
+				<div id="elo">elo : {{client.user.elo}}</div>
+				<div id="xp">xp : {{client.user.xp}}</div>
+			</div>
+			<div v-else>Connecte toi</div>
 		</li>
 		<li id="skinNav" class="menu" modal="skin">
-			<div id="gold">412</div>
-			<div id="gems">12</div>
+			<div v-if="client.user != null">
+				<div id="gold">golds : {{client.user.golds}}</div>
+				<div id="gems">gems : {{client.user.gems}}</div>
+			</div>
 		</li>
 	</ul>
 
@@ -133,7 +138,7 @@
 
 		<input type="text" placeholder="Search user" v-model="pseudo" debounce="250">
 		<ul>
-			<li v-for="suggestion in suggestions">{{suggestion.login}}</li>
+			<li v-for="suggestion in suggestions">{{suggestion.login}} <button @click="follow(suggestion.login)">Follow</button></li>
 		</ul>
 
 		<ul>

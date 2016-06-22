@@ -50,6 +50,20 @@ $(function () {
 		}
 	});
 
+	vues.profileNav = new Vue({
+		el:"#profileNav",
+		data:{
+			client:client
+		}
+	});
+
+	vues.profileNav = new Vue({
+		el:"#skinNav",
+		data:{
+			client:client
+		}
+	});
+
 
 	vues.profile = new Vue({
 		el: '#profile',
