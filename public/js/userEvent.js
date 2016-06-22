@@ -1,7 +1,11 @@
 var vues = {};
 
 $(function(){
+	var inputs = $("input");
 	document.body.addEventListener("keydown", function(e) {
+		if(inputs.is(":focus")){
+			return;
+		}
 		client.keys[e.keyCode] = true;
 	});
 

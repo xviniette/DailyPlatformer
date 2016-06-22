@@ -43,6 +43,9 @@ module.exports = function (app) {
                     db.query("SELECT * FROM users ORDER BY elo DESC LIMIT ? OFFSET ?;", [limit, offset], callback);
                 }
                 
+            },
+            autocomplete: function(begin, callback){
+                db.query("SELECT * FROM users WHERE login like '"+begin+"%' ORDER BY elo DESC LIMIT 0, 10;", callback);
             }
         },
         map: {
@@ -138,10 +141,10 @@ module.exports = function (app) {
         },
         follow: {
             getFollowsUser: function (id, callback) {
-                db.query("SELECT u.id_u, u.login FROM followers f, users u WHERE f.id_follower = ? AND f.id_followed = u.id_u;", [id], callback);
+                db.query("SELECT u.id_u, u.login, u.xp, u.elo FROM followers f, users u WHERE f.id_follower = ? AND f.id_followed = u.id_u;", [id], callback);
             },
             getFollowersUser: function (id, callback) {
-                db.query("SELECT u.id_u, u.login FROM followers f, users u WHERE f.id_followed = ? AND f.id_follower = u.id_u;", [id], callback);
+                db.query("SELECT u.id_u, u.login, u.xp, u.elo FROM followers f, users u WHERE f.id_followed = ? AND f.id_follower = u.id_u;", [id], callback);
             },
             addFollow: function (follower, followed, callback) {
                 db.query("SELECT * FROM followers WHERE id_follower = ? AND id_followed = ?;", [follower, followed], function (err, rows) {

@@ -42,6 +42,23 @@
 		<span id="totalPosition">2431</span>
 	</div>
 
+	<div id="login" class="modal">
+		<div class="close"><button>X</button></div>
+		<form v-on:submit.prevent="login">
+			<h2>Connexion</h2>
+			<input type="text" v-model="log_login" placeholder="Login">
+			<input type="text" v-model="log_password" placeholder="Password">
+			<input type="submit" value="Connexion">
+		</form>
+
+		<form v-on:submit.prevent="register">
+			<h2>Inscription</h2>
+			<input type="text" v-model="reg_login" placeholder="Login">
+			<input type="text" v-model="reg_password" placeholder="Password">
+			<input type="submit" value="Inscription">
+		</form>
+	</div>
+
 	<div id="profile" class="modal">
 		<div class="close"><button>X</button></div>
 		<button>Follow</button>
@@ -110,13 +127,26 @@
 		<div class="close"><button>X</button></div>
 		<h1>Followers</h1>
 		<ul>
-			<li v-for="follower in followers"><button @click="profile(follower.login)">{{follower.login}}</button> <button @click="follow(follower.login)">Follow</button></li>
+			<li v-for="follower in followers"><button @click="profile(follower.login)">{{follower.login}} Elo : {{follower.elo}}</button> <button @click="follow(follower.login)">Follow</button></li>
 		</ul>
 		<h1>Followeds</h1>
+
+		<input type="text" placeholder="Search user" v-model="pseudo" debounce="250">
 		<ul>
-			<li v-for="followed in followeds"><button @click="profile(followed.login)">{{followed.login}}</button> <button @click="unfollow(followed.login)">Unfollow</button></li>
+			<li v-for="suggestion in suggestions">{{suggestion.login}}</li>
+		</ul>
+
+		<ul>
+			<li v-for="followed in followeds"><button @click="profile(followed.login)">{{followed.login}}  Elo : {{followed.elo}}</button> <button @click="unfollow(followed.login)">Unfollow</button></li>
 		</ul>
 		Followers (Pseudo, elo, lvl) Following (Pseudo, elo, lvl) (search bar)
+	</div>
+
+	<div id="option" class="modal">
+		<div class="close"><button>X</button></div>
+		<button v-if="connected.user != null" @click="disconnect">Deconnexion</button>
+
+		<h1>By Vincent BAZIA</h1>
 	</div>
 
 
@@ -128,7 +158,7 @@
 		<br/>groundFriction <input type="range" v-model="groundFriction" max="1000" min="0"> <input type="number" v-model="groundFriction">
 		<br/>airFriction <input type="range" v-model="airFriction" max="1000" min="0"> <input type="number" v-model="airFriction">
 		<br/>groundFrictionThreshold <input type="range" v-model="groundFrictionThreshold" max="1000" min="0"> <input type="number"
-			v-model="groundFrictionThreshold">
+		v-model="groundFrictionThreshold">
 		<br/>airFrictionThreshold <input type="range" v-model="airFrictionThreshold" max="1000" min="0"> <input type="number" v-model="airFrictionThreshold">
 		<br/>normalGravity <input type="range" v-model="normalGravity" max="1000" min="0"> <input type="number" v-model="normalGravity">
 		<br/>normalMaxGravity <input type="range" v-model="normalMaxGravity" max="1000" min="0"> <input type="number" v-model="normalMaxGravity">
@@ -139,21 +169,6 @@
 		<br/>wallExpulsion <input type="range" v-model="wallExpulsion" max="1000" min="0"> <input type="number" v-model="wallExpulsion">
 		<br/>wallStick <input type="range" v-model="wallStick" max="1000" min="0"> <input type="number" v-model="wallStick">
 	</div>
-
-
-	<!--<form id="login_form" v-on:submit.prevent="submit">
-		<input type="text" v-model="login">
-		<input type="text" v-model="password">
-		<input type="submit" value="Connexion">
-	</form>
-
-	<form id="register_form" v-on:submit.prevent="submit">
-		<input type="text" v-model="login">
-		<input type="text" v-model="password">
-		<input type="submit" value="Inscription">
-	</form>
-
-	<button id="disconnect" v-on:click="disconnect">Deconnexion</button>-->
 
 	<script src="js/lib/jquery.js"></script>
 	<script src="js/lib/vue.js"></script>

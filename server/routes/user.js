@@ -271,4 +271,14 @@ module.exports = function (app, router) {
 
         });
     });
+
+    router.get("/autocomplete/:begin", function(req, res){
+        mysql.user.autocomplete(req.params.begin, function (err, rows) {
+            if (err) {
+                res.json({ error: "Error getting autocomplete" });
+                return;
+            }
+            res.json(rows);
+        });
+    });
 }
