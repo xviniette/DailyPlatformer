@@ -68,6 +68,8 @@ $(function () {
 	vues.profile = new Vue({
 		el: '#profile',
 		data: {
+			pseudo:"",
+			suggestions:[],
 			profile: {},
 			skins: [],
 			achievements: []
@@ -87,9 +89,28 @@ $(function () {
 					});
 
 					$("#profile").show();
+				},
+				autocomplete:function(){
+					var _this = this;
+					if(_this.pseudo.length > 1){
+						$.get("/user/autocomplete/"+_this.pseudo, function(res){
+							if(res.error){
+								_this.suggestions = [];
+								return;
+							}
+							_this.suggestions = res;
+						})
+					}else{
+						_this.suggestions = [];
+					}
 				}
 			}
 		});
+
+	vues.profile.$watch("pseudo", function(val){
+	vues.profile.autocomplete();
+});
+
 
 	vues.skin = new Vue({
 		el: '#skin',
