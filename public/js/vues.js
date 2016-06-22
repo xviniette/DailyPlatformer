@@ -1,5 +1,4 @@
 var vues = {};
-
 $(function () {
 
 
@@ -428,5 +427,10 @@ vues.option = new Vue({
 	}
 });
 
+
+	// vues.physic = new Vue({
+	// 	el: '#physics',
+	// 	data:client.player
+	// });
 
 });
