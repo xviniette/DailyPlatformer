@@ -1,4 +1,10 @@
-Daily Platformer (HTML5/JS)
-----------------
+# DailyPlatformer (WIP)
 
-Daily Platformer is a multiplayer asynchronous platformer browser game. **It will be fun :D**
+Multiplayer asynchronous 2d platform browser game. This game is currently in **WIP**
+
+## Tech
+* Javascript
+* Node.js
+* MySQL
+* HTML5/CSS3
+* Procedural generation
