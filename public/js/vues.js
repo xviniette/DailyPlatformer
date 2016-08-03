@@ -56,13 +56,12 @@ $(function () {
 		}
 	});
 
-	vues.profileNav = new Vue({
+	vues.skinNav = new Vue({
 		el:"#skinNav",
 		data:{
 			client:client
 		}
 	});
-
 
 	vues.profile = new Vue({
 		el: '#profile',

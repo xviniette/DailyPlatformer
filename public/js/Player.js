@@ -25,7 +25,7 @@ var Player = function (json) {
     this.airFrictionThreshold = 50;
 
     this.normalGravity = 15;
-    this.normalMaxGravity = 350;
+    this.normalMaxGravity = 600;
 
     this.wallGravity = 5;
     this.wallMaxGravity = 150;
@@ -57,7 +57,7 @@ var Player = function (json) {
     this.direction = 1;
 
     this.inputs = [];
-    this.lastInput = null;
+    this.lastInput = {u:false};
 
     this.allInputs = [];
 

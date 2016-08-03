@@ -8,6 +8,10 @@ module.exports = function (app, router) {
                 return;
             }
             if (rows.length > 0) {
+                // var mapgenerator = require("../MapGenerator.js");
+                // var dataMap = mapgenerator.generateMap();
+                // rows[0].tiles = dataMap.tiles;
+                // rows[0].player = dataMap.player;
                 res.json(rows[0]);
             } else {
                 res.json({ error: "No current map." });

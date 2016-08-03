@@ -20,10 +20,14 @@ Display.prototype.init = function(json){
 Display.prototype.render = function(){
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+	var player = this.client.player;
+	if(player){
+		this.center.x = this.canvas.width/2 - player.x;
+		this.center.y = this.canvas.height/2 - player.y;
+	}
+
 	var map = this.client.map;
 	var tilesize = map.tilesize;
-
-	
 
 	for(var i in map.tiles){
 		for(var j in map.tiles[i]){
@@ -35,7 +39,7 @@ Display.prototype.render = function(){
 					default:
 					this.ctx.fillStyle = "black";
 				}
-				this.ctx.fillRect(i * tilesize, j * tilesize, tilesize, tilesize);
+				this.ctx.fillRect(i * tilesize + this.center.x, j * tilesize + this.center.y, tilesize, tilesize);
 			}
 		}
 	}
@@ -44,13 +48,12 @@ Display.prototype.render = function(){
 	this.ctx.textAlign = "center"; 
 	for(var i in ghosts){
 		this.ctx.fillStyle = "yellow";
-		this.ctx.fillRect(ghosts[i].x - ghosts[i].radius, ghosts[i].y - ghosts[i].radius, ghosts[i].radius * 2, ghosts[i].radius * 2);
+		this.ctx.fillRect(ghosts[i].x  + this.center.x - ghosts[i].radius, ghosts[i].y  + this.center.y - ghosts[i].radius, ghosts[i].radius * 2, ghosts[i].radius * 2);
 		this.ctx.fillStyle = "black";
-		this.ctx.fillText(ghosts[i].pseudo, ghosts[i].x, ghosts[i].y  - ghosts[i].radius - 5); 
+		this.ctx.fillText(ghosts[i].pseudo, ghosts[i].x  + this.center.x, ghosts[i].y  + this.center.y - ghosts[i].radius - 5); 
 	}
 
-	var player = this.client.player;
 
 	this.ctx.fillStyle = "blue";
-	this.ctx.fillRect(player.x - player.radius, player.y - player.radius, player.radius * 2, player.radius * 2);
+	this.ctx.fillRect(player.x  + this.center.x - player.radius, player.y  + this.center.y - player.radius, player.radius * 2, player.radius * 2);
 }
