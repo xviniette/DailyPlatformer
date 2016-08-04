@@ -50,6 +50,11 @@ Display.prototype.render = function(){
 		this.ctx.fillStyle = "yellow";
 		this.ctx.fillRect(ghosts[i].x  + this.center.x - ghosts[i].radius, ghosts[i].y  + this.center.y - ghosts[i].radius, ghosts[i].radius * 2, ghosts[i].radius * 2);
 		this.ctx.fillStyle = "black";
+		if(ghosts[i].type=="follow"){
+			this.ctx.fillStyle = "green";
+		}else if(ghosts[i].type=="me"){
+			this.ctx.fillStyle = "red";
+		}
 		this.ctx.fillText(ghosts[i].pseudo, ghosts[i].x  + this.center.x, ghosts[i].y  + this.center.y - ghosts[i].radius - 5); 
 	}
 

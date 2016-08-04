@@ -80,9 +80,11 @@ module.exports = function (app) {
     });
     job.start();
 
+    endRankedCompute();
+
     return {
         getNextTime: function () {
             return moment(job.nextDate()._d).diff();
-        }
+        },
     }
 }

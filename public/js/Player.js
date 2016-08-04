@@ -3,6 +3,7 @@ var Player = function (json) {
 
     this.id = 1;
     this.pseudo = null;
+    this.type = null;
 
     this.delta = 0.016;
 

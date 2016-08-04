@@ -4,7 +4,7 @@ var socket;
 
 $(function(){
 	client = new Client();
-	client.loadMap();
+	client.loadMap(3);
 
 	var update = function(){
 		client.update();

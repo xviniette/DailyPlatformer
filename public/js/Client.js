@@ -71,7 +71,8 @@ Client.prototype.initialize = function(){
 		var p = new Player({
 			room:this,
 			id:this.runs[i].id_u,
-			pseudo:this.runs[i].login
+			pseudo:this.runs[i].login,
+			type:(this.runs[i].me ? "me" : (this.runs[i].follow ? "follow" : null))
 		});
 		p.reset();
 		p.positions = this.runs[i].positions.split("|");
